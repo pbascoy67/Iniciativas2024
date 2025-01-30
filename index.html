@@ -290,10 +290,13 @@
     </style>
 </head>
 <body>
+    <!-- Encabezado con Título Centrado y Logo a la Derecha -->
     <div class="encabezado">
         <h1>Iniciativas Aprobadas 2024</h1>
         <img src="blatorh.png" alt="Logo de Blatorh">
     </div>
+
+    <!-- Sección de Filtros con Fondo Azul Oscuro y Texto Blanco -->
     <div class="filtros">
         <div>
             <label for="filtro-responsable">Filtrar por Responsable:</label>
@@ -310,6 +313,7 @@
         </div>
     </div>
     
+    <!-- Tabla de Iniciativas -->
     <table>
         <thead>
             <tr>
@@ -320,14 +324,17 @@
             </tr>
         </thead>
         <tbody id="tabla-cuerpo">
+            <!-- Filas de la tabla serán generadas dinámicamente -->
         </tbody>
     </table>
 
+    <!-- Botones para Descargar a Excel y Agregar Nueva Iniciativa -->
     <div class="btn-agregar btn-exportar">
         <button id="btn-exportar">📥 Descargar a Excel</button>
         <button id="btn-agregar">+ Agregar Iniciativa</button>
     </div>
 
+    <!-- Modal para Editar Iniciativas y Comentarios -->
     <div id="miModal" class="modal">
         <div class="modal-content">
             <span class="close">&times;</span>
@@ -510,6 +517,8 @@
             guardarDatos();
             renderTabla();
             cargarFiltros();
+            // Abrir el modal para editar el responsable de la nueva iniciativa
+            abrirModal(iniciativas.length - 1, 'responsable');
         });
 
         // Event Listener para Exportar a Excel con Colores de Filas
@@ -578,7 +587,7 @@
             URL.revokeObjectURL(url);
         });
 
-        // Función para Guardar Datos en LocalStorage y Actualizar Filtros
+        // Función para Guardar Datos en LocalStorage y Actualizar Filtros y Tabla
         function guardarDatos() {
             localStorage.setItem("iniciativas", JSON.stringify(iniciativas));
             cargarFiltros();
@@ -601,9 +610,13 @@
             modalTitulo.textContent = `Editar ${campoTexto}`;
             if (campo === 'nombre' || campo === 'responsable') {
                 // Mostrar el input de texto para 'nombre' o 'responsable'
-                modalInput.value = campo === 'nombre' ? iniciativas[index].nombre : iniciativas[index].responsable;
+                modalInput.value = campo === 'nombre' ? iniciativas[index].nombre : (iniciativas[index].responsable !== "Seleccione" ? iniciativas[index].responsable : "");
                 modalInput.style.display = 'block';
                 modalTextarea.style.display = 'none';
+                // Si estamos editando 'responsable' y es "Seleccione", limpiar el valor
+                if (campo === 'responsable' && iniciativas[index].responsable === "Seleccione") {
+                    modalInput.value = "";
+                }
             } else {
                 // Mostrar el textarea para 'comentarios'
                 modalTextarea.value = iniciativas[index].comentarios;
@@ -635,9 +648,12 @@
                 const nuevoResponsable = modalInput.value.trim();
                 if (nuevoResponsable !== "") {
                     iniciativas[filaActual].responsable = nuevoResponsable;
-                    guardarDatos();
+                } else {
+                    alert("El campo 'Responsable' no puede estar vacío.");
+                    return;
                 }
             }
+            guardarDatos();
             modal.style.display = "none";
         });
 
