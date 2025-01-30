@@ -610,13 +610,13 @@
             modalTitulo.textContent = `Editar ${campoTexto}`;
             if (campo === 'nombre' || campo === 'responsable') {
                 // Mostrar el input de texto para 'nombre' o 'responsable'
-                modalInput.value = campo === 'nombre' ? iniciativas[index].nombre : (iniciativas[index].responsable !== "Seleccione" ? iniciativas[index].responsable : "");
-                modalInput.style.display = 'block';
-                modalTextarea.style.display = 'none';
-                // Si estamos editando 'responsable' y es "Seleccione", limpiar el valor
                 if (campo === 'responsable' && iniciativas[index].responsable === "Seleccione") {
                     modalInput.value = "";
+                } else {
+                    modalInput.value = campo === 'nombre' ? iniciativas[index].nombre : iniciativas[index].responsable;
                 }
+                modalInput.style.display = 'block';
+                modalTextarea.style.display = 'none';
             } else {
                 // Mostrar el textarea para 'comentarios'
                 modalTextarea.value = iniciativas[index].comentarios;
@@ -641,17 +641,21 @@
         // Event Listener para Guardar Cambios desde el Modal
         btnGuardarCambio.addEventListener("click", () => {
             if (campoActual === 'nombre') {
-                iniciativas[filaActual].nombre = modalInput.value.trim() || "Sin Nombre";
+                const nuevoNombre = modalInput.value.trim();
+                if (nuevoNombre === "") {
+                    alert("El campo 'Iniciativa' no puede estar vacío.");
+                    return;
+                }
+                iniciativas[filaActual].nombre = nuevoNombre;
             } else if (campoActual === 'comentarios') {
                 iniciativas[filaActual].comentarios = modalTextarea.value.trim();
             } else if (campoActual === 'responsable') {
                 const nuevoResponsable = modalInput.value.trim();
-                if (nuevoResponsable !== "") {
-                    iniciativas[filaActual].responsable = nuevoResponsable;
-                } else {
+                if (nuevoResponsable === "") {
                     alert("El campo 'Responsable' no puede estar vacío.");
                     return;
                 }
+                iniciativas[filaActual].responsable = nuevoResponsable;
             }
             guardarDatos();
             modal.style.display = "none";
