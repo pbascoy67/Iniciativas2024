@@ -57,6 +57,7 @@
             right: 20px;
         }
 
+        /* Sección de Filtros con Fondo Azul Oscuro y Texto Blanco */
         .filtros {
             display: flex;
             flex-wrap: wrap;
@@ -93,6 +94,7 @@
             outline: none;
         }
 
+        /* Tabla de Iniciativas */
         table {
             width: 100%;
             border-collapse: collapse;
@@ -143,6 +145,7 @@
             background-color: var(--color-descartada) !important;
         }
 
+        /* Estilos para Inputs y Textareas */
         input[type="text"], select, textarea {
             width: 100%;
             padding: 8px;
@@ -229,7 +232,7 @@
             }
         }
 
-        /* Modal Styles */
+        /* Estilos para el Modal */
         .modal {
             display: none; /* Hidden by default */
             position: fixed; /* Stay in place */
@@ -296,10 +299,13 @@
     </style>
 </head>
 <body>
+    <!-- Encabezado con Título Centrado y Logo a la Derecha -->
     <div class="encabezado">
         <h1>Iniciativas Aprobadas 2024</h1>
         <img src="blatorh.png" alt="Logo de Blatorh">
     </div>
+
+    <!-- Sección de Filtros con Fondo Azul Oscuro y Texto Blanco -->
     <div class="filtros">
         <div>
             <label for="filtro-responsable">Filtrar por Responsable:</label>
@@ -316,6 +322,7 @@
         </div>
     </div>
     
+    <!-- Tabla de Iniciativas -->
     <table>
         <thead>
             <tr>
@@ -326,15 +333,17 @@
             </tr>
         </thead>
         <tbody id="tabla-cuerpo">
+            <!-- Filas de la tabla serán generadas dinámicamente -->
         </tbody>
     </table>
 
+    <!-- Botones para Descargar a Excel y Agregar Nueva Iniciativa -->
     <div class="btn-agregar btn-exportar">
         <button id="btn-exportar">📥 Descargar a Excel</button>
         <button id="btn-agregar">+ Agregar Iniciativa</button>
     </div>
 
-    <!-- Modal para Iniciativas y Comentarios -->
+    <!-- Modal para Editar Iniciativas y Comentarios -->
     <div id="miModal" class="modal">
         <div class="modal-content">
             <span class="close">&times;</span>
@@ -346,7 +355,7 @@
     </div>
 
     <script>
-        // Datos Iniciales
+        // Datos Iniciales de las Iniciativas
         let iniciativas = [
             { nombre: "Generar un set de reportes en nuestra base de datos", responsable: "Anthony Rivero", estado: "No iniciada", comentarios: "" },
             { nombre: "Implementación de herramienta de monitoreo", responsable: "Anthony Rivero", estado: "En Desarrollo", comentarios: "" },
@@ -355,15 +364,17 @@
             { nombre: "Elección de herramienta y propuesta de procesos", responsable: "Pablo Bascoy", estado: "Descartada", comentarios: "" }
         ];
 
+        // Estados Disponibles
         const estados = ["No iniciada", "En Desarrollo", "Descartada", "Finalizada"];
 
+        // Referencias a Elementos del DOM
         const filtroResponsable = document.getElementById("filtro-responsable");
         const filtroEstado = document.getElementById("filtro-estado");
         const tbody = document.getElementById("tabla-cuerpo");
         const btnAgregar = document.getElementById("btn-agregar");
         const btnExportar = document.getElementById("btn-exportar");
 
-        // Modal Elements
+        // Referencias al Modal y sus Elementos
         const modal = document.getElementById("miModal");
         const spanCerrar = document.getElementsByClassName("close")[0];
         const modalTitulo = document.getElementById("modal-titulo");
@@ -371,6 +382,7 @@
         const modalTextarea = document.getElementById("modal-textarea");
         const btnGuardarCambio = document.getElementById("guardar-cambio");
 
+        // Variables para Guardar el Estado Actual del Modal
         let filaActual = null;
         let campoActual = null;
 
@@ -394,18 +406,19 @@
             });
         }
 
-        // Renderizar la Tabla
+        // Renderizar la Tabla de Iniciativas
         function renderTabla() {
             tbody.innerHTML = "";
             const filtroResp = filtroResponsable.value;
             const filtroEst = filtroEstado.value;
 
             iniciativas.forEach((iniciativa, index) => {
+                // Verificar si la iniciativa cumple con los filtros seleccionados
                 if ((filtroResp === "Todos" || filtroResp === iniciativa.responsable) &&
                     (filtroEst === "Todos" || filtroEst === iniciativa.estado)) {
                         const tr = document.createElement("tr");
                         
-                        // Asignar clase según el estado
+                        // Asignar clase según el estado para aplicar color de fondo
                         switch (iniciativa.estado) {
                             case "Finalizada":
                                 tr.classList.add("finalizada");
@@ -423,19 +436,48 @@
                                 break;
                         }
 
-                        // Iniciativa
+                        // Celda de Iniciativa - Editable mediante Modal
                         const iniciativaTd = document.createElement("td");
                         iniciativaTd.textContent = iniciativa.nombre;
                         iniciativaTd.style.cursor = "pointer";
                         iniciativaTd.addEventListener("click", () => abrirModal(index, 'nombre'));
                         tr.appendChild(iniciativaTd);
                         
-                        // Responsable
+                        // Celda de Responsable - Editable mediante Select Dropdown
                         const responsableTd = document.createElement("td");
-                        responsableTd.textContent = iniciativa.responsable;
+                        const selectResponsable = document.createElement("select");
+                        const responsablesUnicos = [...new Set(iniciativas.map(i => i.responsable))];
+                        responsablesUnicos.forEach(responsable => {
+                            const option = document.createElement("option");
+                            option.value = responsable;
+                            option.textContent = responsable;
+                            if (responsable === iniciativa.responsable) {
+                                option.selected = true;
+                            }
+                            selectResponsable.appendChild(option);
+                        });
+                        // Agregar opción para agregar un nuevo Responsable
+                        const optionNuevo = document.createElement("option");
+                        optionNuevo.value = "Nuevo";
+                        optionNuevo.textContent = "Añadir Nuevo";
+                        selectResponsable.appendChild(optionNuevo);
+
+                        // Manejar el cambio en el select de Responsable
+                        selectResponsable.addEventListener("change", () => {
+                            if (selectResponsable.value === "Nuevo") {
+                                // Abrir modal para añadir un nuevo Responsable
+                                abrirModal(index, 'responsable');
+                            } else {
+                                // Actualizar el Responsable de la iniciativa
+                                iniciativas[index].responsable = selectResponsable.value;
+                                guardarDatos();
+                            }
+                        });
+
+                        responsableTd.appendChild(selectResponsable);
                         tr.appendChild(responsableTd);
                         
-                        // Estado
+                        // Celda de Estado - Editable mediante Select Dropdown
                         const estadoTd = document.createElement("td");
                         const selectEstado = document.createElement("select");
                         estados.forEach(estado => {
@@ -454,7 +496,7 @@
                         estadoTd.appendChild(selectEstado);
                         tr.appendChild(estadoTd);
                         
-                        // Comentarios
+                        // Celda de Comentarios - Editable mediante Modal
                         const comentarioTd = document.createElement("td");
                         comentarioTd.textContent = iniciativa.comentarios || "Añadir comentario";
                         comentarioTd.style.cursor = "pointer";
@@ -560,17 +602,19 @@
             }
         }
 
-        // Abrir Modal para Editar
+        // Función para Abrir el Modal y Determinar el Campo a Editar
         function abrirModal(index, campo) {
             filaActual = index;
             campoActual = campo;
-            const campoTexto = campo === 'nombre' ? 'Iniciativa' : 'Comentarios';
+            const campoTexto = campo === 'nombre' ? 'Iniciativa' : (campo === 'comentarios' ? 'Comentarios' : 'Responsable');
             modalTitulo.textContent = `Editar ${campoTexto}`;
-            if (campo === 'nombre') {
-                modalInput.value = iniciativas[index].nombre;
+            if (campo === 'nombre' || campo === 'responsable') {
+                // Mostrar el input de texto para 'nombre' o 'responsable'
+                modalInput.value = campo === 'nombre' ? iniciativas[index].nombre : iniciativas[index].responsable;
                 modalInput.style.display = 'block';
                 modalTextarea.style.display = 'none';
             } else {
+                // Mostrar el textarea para 'comentarios'
                 modalTextarea.value = iniciativas[index].comentarios;
                 modalTextarea.style.display = 'block';
                 modalInput.style.display = 'none';
@@ -578,39 +622,46 @@
             modal.style.display = "block";
         }
 
-        // Cerrar Modal
+        // Cerrar el Modal al Hacer Clic en la 'X'
         spanCerrar.onclick = function() {
             modal.style.display = "none";
         }
 
+        // Cerrar el Modal al Hacer Clic Fuera del Contenido del Modal
         window.onclick = function(event) {
             if (event.target == modal) {
                 modal.style.display = "none";
             }
         }
 
-        // Guardar Cambios desde Modal
+        // Guardar Cambios desde el Modal
         btnGuardarCambio.addEventListener("click", () => {
             if (campoActual === 'nombre') {
                 iniciativas[filaActual].nombre = modalInput.value.trim() || "Sin Nombre";
             } else if (campoActual === 'comentarios') {
                 iniciativas[filaActual].comentarios = modalTextarea.value.trim();
+            } else if (campoActual === 'responsable') {
+                const nuevoResponsable = modalInput.value.trim();
+                if (nuevoResponsable !== "") {
+                    iniciativas[filaActual].responsable = nuevoResponsable;
+                    guardarDatos();
+                }
             }
-            guardarDatos();
             modal.style.display = "none";
         });
 
-        // Inicialización
+        // Inicialización de la Página
         function init() {
             cargarDatos();
             cargarFiltros();
             renderTabla();
 
-            // Escuchar cambios en filtros
+            // Escuchar cambios en filtros para re-renderizar la tabla
             filtroResponsable.addEventListener("change", renderTabla);
             filtroEstado.addEventListener("change", renderTabla);
         }
 
+        // Ejecutar la Inicialización al Cargar la Página
         init();
     </script>
 </body>
