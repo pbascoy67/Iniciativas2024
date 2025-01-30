@@ -5,22 +5,21 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Iniciativas Aprobadas 2024</title>
     <style>
-        /* Variables de Color - Paleta Azul Oscuro */
         :root {
             --color-fondo: #f0f4f8;
-            --color-primario: #003366; /* Azul oscuro */
+            --color-primario: #003366;
             --color-secundario: #ffffff;
-            --color-texto: #ffffff; /* Texto en blanco para encabezado y filtros */
+            --color-texto: #ffffff;
             --color-texto-general: #333333;
             --color-borde: #cccccc;
             --color-hover: #e6f0fa;
-            --color-header: #002244; /* Azul más oscuro para el encabezado */
+            --color-header: #002244;
             --color-boton: #003366;
             --color-boton-texto: #ffffff;
-            --color-finalizada: #d1e7dd; /* Verde azulado claro */
-            --color-en-desarrollo: #fff3cd; /* Amarillo claro */
-            --color-no-iniciada: #f8d7da; /* Rojo claro */
-            --color-descartada: #d1ecf1; /* Celeste claro */
+            --color-finalizada: #d1e7dd;
+            --color-en-desarrollo: #fff3cd;
+            --color-no-iniciada: #f8d7da;
+            --color-descartada: #d1ecf1;
         }
 
         body {
@@ -31,7 +30,6 @@
             color: var(--color-texto-general);
         }
 
-        /* Encabezado con Logo Movido al Derecho y Título Centrado */
         .encabezado {
             display: flex;
             align-items: center;
@@ -57,7 +55,6 @@
             right: 20px;
         }
 
-        /* Sección de Filtros con Fondo Azul Oscuro y Texto Blanco */
         .filtros {
             display: flex;
             flex-wrap: wrap;
@@ -94,7 +91,6 @@
             outline: none;
         }
 
-        /* Tabla de Iniciativas */
         table {
             width: 100%;
             border-collapse: collapse;
@@ -128,7 +124,6 @@
             background-color: var(--color-hover);
         }
 
-        /* Colores de Filas según Estado */
         tr.finalizada {
             background-color: var(--color-finalizada) !important;
         }
@@ -145,7 +140,6 @@
             background-color: var(--color-descartada) !important;
         }
 
-        /* Estilos para Inputs y Textareas */
         input[type="text"], select, textarea {
             width: 100%;
             padding: 8px;
@@ -173,7 +167,6 @@
             min-height: 120px;
         }
 
-        /* Botones */
         .btn-agregar, .btn-exportar {
             display: flex;
             justify-content: flex-end;
@@ -197,7 +190,6 @@
             transform: scale(1.05);
         }
 
-        /* Responsividad */
         @media (max-width: 768px) {
             th, td {
                 padding: 8px 10px;
@@ -232,25 +224,24 @@
             }
         }
 
-        /* Estilos para el Modal */
         .modal {
-            display: none; /* Hidden by default */
-            position: fixed; /* Stay in place */
-            z-index: 100; /* Sit on top */
+            display: none;
+            position: fixed;
+            z-index: 100;
             left: 0;
             top: 0;
-            width: 100%; /* Full width */
-            height: 100%; /* Full height */
-            overflow: auto; /* Enable scroll if needed */
-            background-color: rgba(0,0,0,0.5); /* Black w/ opacity */
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0,0,0,0.5);
         }
 
         .modal-content {
             background-color: var(--color-secundario);
-            margin: 10% auto; /* 10% from the top and centered */
+            margin: 10% auto;
             padding: 20px;
             border: 1px solid var(--color-borde);
-            width: 80%; /* Could be more or less, depending on screen size */
+            width: 80%;
             border-radius: 8px;
             position: relative;
         }
@@ -299,13 +290,10 @@
     </style>
 </head>
 <body>
-    <!-- Encabezado con Título Centrado y Logo a la Derecha -->
     <div class="encabezado">
         <h1>Iniciativas Aprobadas 2024</h1>
         <img src="blatorh.png" alt="Logo de Blatorh">
     </div>
-
-    <!-- Sección de Filtros con Fondo Azul Oscuro y Texto Blanco -->
     <div class="filtros">
         <div>
             <label for="filtro-responsable">Filtrar por Responsable:</label>
@@ -322,7 +310,6 @@
         </div>
     </div>
     
-    <!-- Tabla de Iniciativas -->
     <table>
         <thead>
             <tr>
@@ -333,17 +320,14 @@
             </tr>
         </thead>
         <tbody id="tabla-cuerpo">
-            <!-- Filas de la tabla serán generadas dinámicamente -->
         </tbody>
     </table>
 
-    <!-- Botones para Descargar a Excel y Agregar Nueva Iniciativa -->
     <div class="btn-agregar btn-exportar">
         <button id="btn-exportar">📥 Descargar a Excel</button>
         <button id="btn-agregar">+ Agregar Iniciativa</button>
     </div>
 
-    <!-- Modal para Editar Iniciativas y Comentarios -->
     <div id="miModal" class="modal">
         <div class="modal-content">
             <span class="close">&times;</span>
@@ -355,7 +339,6 @@
     </div>
 
     <script>
-        // Datos Iniciales de las Iniciativas
         let iniciativas = [
             { nombre: "Generar un set de reportes en nuestra base de datos", responsable: "Anthony Rivero", estado: "No iniciada", comentarios: "" },
             { nombre: "Implementación de herramienta de monitoreo", responsable: "Anthony Rivero", estado: "En Desarrollo", comentarios: "" },
@@ -364,17 +347,14 @@
             { nombre: "Elección de herramienta y propuesta de procesos", responsable: "Pablo Bascoy", estado: "Descartada", comentarios: "" }
         ];
 
-        // Estados Disponibles
         const estados = ["No iniciada", "En Desarrollo", "Descartada", "Finalizada"];
 
-        // Referencias a Elementos del DOM
         const filtroResponsable = document.getElementById("filtro-responsable");
         const filtroEstado = document.getElementById("filtro-estado");
         const tbody = document.getElementById("tabla-cuerpo");
         const btnAgregar = document.getElementById("btn-agregar");
         const btnExportar = document.getElementById("btn-exportar");
 
-        // Referencias al Modal y sus Elementos
         const modal = document.getElementById("miModal");
         const spanCerrar = document.getElementsByClassName("close")[0];
         const modalTitulo = document.getElementById("modal-titulo");
@@ -382,11 +362,9 @@
         const modalTextarea = document.getElementById("modal-textarea");
         const btnGuardarCambio = document.getElementById("guardar-cambio");
 
-        // Variables para Guardar el Estado Actual del Modal
         let filaActual = null;
         let campoActual = null;
 
-        // Cargar Responsables Únicos en el Filtro
         function cargarFiltros() {
             filtroResponsable.innerHTML = '<option value="Todos">Todos</option>';
             const responsablesUnicos = [...new Set(iniciativas.map(i => i.responsable))];
@@ -406,19 +384,16 @@
             });
         }
 
-        // Renderizar la Tabla de Iniciativas
         function renderTabla() {
             tbody.innerHTML = "";
             const filtroResp = filtroResponsable.value;
             const filtroEst = filtroEstado.value;
 
             iniciativas.forEach((iniciativa, index) => {
-                // Verificar si la iniciativa cumple con los filtros seleccionados
                 if ((filtroResp === "Todos" || filtroResp === iniciativa.responsable) &&
                     (filtroEst === "Todos" || filtroEst === iniciativa.estado)) {
                         const tr = document.createElement("tr");
                         
-                        // Asignar clase según el estado para aplicar color de fondo
                         switch (iniciativa.estado) {
                             case "Finalizada":
                                 tr.classList.add("finalizada");
@@ -436,14 +411,12 @@
                                 break;
                         }
 
-                        // Celda de Iniciativa - Editable mediante Modal
                         const iniciativaTd = document.createElement("td");
                         iniciativaTd.textContent = iniciativa.nombre;
                         iniciativaTd.style.cursor = "pointer";
                         iniciativaTd.addEventListener("click", () => abrirModal(index, 'nombre'));
                         tr.appendChild(iniciativaTd);
                         
-                        // Celda de Responsable - Editable mediante Select Dropdown
                         const responsableTd = document.createElement("td");
                         const selectResponsable = document.createElement("select");
                         const responsablesUnicos = [...new Set(iniciativas.map(i => i.responsable))];
@@ -456,19 +429,15 @@
                             }
                             selectResponsable.appendChild(option);
                         });
-                        // Agregar opción para agregar un nuevo Responsable
                         const optionNuevo = document.createElement("option");
                         optionNuevo.value = "Nuevo";
                         optionNuevo.textContent = "Añadir Nuevo";
                         selectResponsable.appendChild(optionNuevo);
 
-                        // Manejar el cambio en el select de Responsable
                         selectResponsable.addEventListener("change", () => {
                             if (selectResponsable.value === "Nuevo") {
-                                // Abrir modal para añadir un nuevo Responsable
                                 abrirModal(index, 'responsable');
                             } else {
-                                // Actualizar el Responsable de la iniciativa
                                 iniciativas[index].responsable = selectResponsable.value;
                                 guardarDatos();
                             }
@@ -477,7 +446,6 @@
                         responsableTd.appendChild(selectResponsable);
                         tr.appendChild(responsableTd);
                         
-                        // Celda de Estado - Editable mediante Select Dropdown
                         const estadoTd = document.createElement("td");
                         const selectEstado = document.createElement("select");
                         estados.forEach(estado => {
@@ -496,7 +464,6 @@
                         estadoTd.appendChild(selectEstado);
                         tr.appendChild(estadoTd);
                         
-                        // Celda de Comentarios - Editable mediante Modal
                         const comentarioTd = document.createElement("td");
                         comentarioTd.textContent = iniciativa.comentarios || "Añadir comentario";
                         comentarioTd.style.cursor = "pointer";
@@ -508,11 +475,10 @@
             });
         }
 
-        // Agregar Nueva Iniciativa
         btnAgregar.addEventListener("click", () => {
             const nuevaIniciativa = {
                 nombre: "Nueva Iniciativa",
-                responsable: "Seleccione",
+                responsable: "Nuevo",
                 estado: "No iniciada",
                 comentarios: ""
             };
@@ -522,9 +488,7 @@
             cargarFiltros();
         });
 
-        // Exportar a Excel con Colores de Filas
         btnExportar.addEventListener("click", () => {
-            // Crear una nueva tabla HTML temporal con estilos inline
             let tablaHTML = `
                 <table border="1">
                     <thead>
@@ -547,19 +511,19 @@
                         let colorFondo = "";
                         switch (iniciativa.estado) {
                             case "Finalizada":
-                                colorFondo = "#d1e7dd"; // Verde azulado claro
+                                colorFondo = "#d1e7dd";
                                 break;
                             case "En Desarrollo":
-                                colorFondo = "#fff3cd"; // Amarillo claro
+                                colorFondo = "#fff3cd";
                                 break;
                             case "No iniciada":
-                                colorFondo = "#f8d7da"; // Rojo claro
+                                colorFondo = "#f8d7da";
                                 break;
                             case "Descartada":
-                                colorFondo = "#d1ecf1"; // Celeste claro
+                                colorFondo = "#d1ecf1";
                                 break;
                             default:
-                                colorFondo = "#ffffff"; // Blanco
+                                colorFondo = "#ffffff";
                         }
 
                         tablaHTML += `
@@ -578,7 +542,6 @@
                 </table>
             `;
 
-            // Crear un Blob con el contenido HTML
             const blob = new Blob([tablaHTML], { type: "application/vnd.ms-excel" });
             const url = URL.createObjectURL(blob);
             const a = document.createElement("a");
@@ -588,13 +551,11 @@
             URL.revokeObjectURL(url);
         });
 
-        // Guardar Datos en LocalStorage
         function guardarDatos() {
             localStorage.setItem("iniciativas", JSON.stringify(iniciativas));
             renderTabla();
         }
 
-        // Cargar Datos desde LocalStorage
         function cargarDatos() {
             const datosGuardados = localStorage.getItem("iniciativas");
             if (datosGuardados) {
@@ -602,19 +563,16 @@
             }
         }
 
-        // Función para Abrir el Modal y Determinar el Campo a Editar
         function abrirModal(index, campo) {
             filaActual = index;
             campoActual = campo;
             const campoTexto = campo === 'nombre' ? 'Iniciativa' : (campo === 'comentarios' ? 'Comentarios' : 'Responsable');
             modalTitulo.textContent = `Editar ${campoTexto}`;
             if (campo === 'nombre' || campo === 'responsable') {
-                // Mostrar el input de texto para 'nombre' o 'responsable'
                 modalInput.value = campo === 'nombre' ? iniciativas[index].nombre : iniciativas[index].responsable;
                 modalInput.style.display = 'block';
                 modalTextarea.style.display = 'none';
             } else {
-                // Mostrar el textarea para 'comentarios'
                 modalTextarea.value = iniciativas[index].comentarios;
                 modalTextarea.style.display = 'block';
                 modalInput.style.display = 'none';
@@ -622,19 +580,16 @@
             modal.style.display = "block";
         }
 
-        // Cerrar el Modal al Hacer Clic en la 'X'
         spanCerrar.onclick = function() {
             modal.style.display = "none";
         }
 
-        // Cerrar el Modal al Hacer Clic Fuera del Contenido del Modal
         window.onclick = function(event) {
             if (event.target == modal) {
                 modal.style.display = "none";
             }
         }
 
-        // Guardar Cambios desde el Modal
         btnGuardarCambio.addEventListener("click", () => {
             if (campoActual === 'nombre') {
                 iniciativas[filaActual].nombre = modalInput.value.trim() || "Sin Nombre";
@@ -650,18 +605,15 @@
             modal.style.display = "none";
         });
 
-        // Inicialización de la Página
         function init() {
             cargarDatos();
             cargarFiltros();
             renderTabla();
 
-            // Escuchar cambios en filtros para re-renderizar la tabla
             filtroResponsable.addEventListener("change", renderTabla);
             filtroEstado.addEventListener("change", renderTabla);
         }
 
-        // Ejecutar la Inicialización al Cargar la Página
         init();
     </script>
 </body>
