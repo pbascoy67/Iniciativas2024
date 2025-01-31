@@ -16,10 +16,6 @@
             --color-header: #002244;
             --color-boton: #003366;
             --color-boton-texto: #ffffff;
-            --color-finalizada: #d1e7dd;
-            --color-en-desarrollo: #fff3cd;
-            --color-no-iniciada: #f8d7da;
-            --color-descartada: #d1ecf1;
         }
 
         body {
@@ -124,22 +120,6 @@
             background-color: var(--color-hover);
         }
 
-        tr.finalizada {
-            background-color: var(--color-finalizada) !important;
-        }
-
-        tr.en-desarrollo {
-            background-color: var(--color-en-desarrollo) !important;
-        }
-
-        tr.no-iniciada {
-            background-color: var(--color-no-iniciada) !important;
-        }
-
-        tr.descartada {
-            background-color: var(--color-descartada) !important;
-        }
-
         input[type="text"], select, textarea {
             width: 100%;
             padding: 8px;
@@ -174,7 +154,7 @@
             gap: 10px;
         }
 
-        .btn-agregar button, .btn-exportar button {
+        .btn-agregar button, .btn-exportar button, #btn-gestionar-estados {
             background-color: var(--color-boton);
             color: var(--color-boton-texto);
             border: none;
@@ -185,7 +165,7 @@
             transition: background-color 0.3s, transform 0.2s;
         }
 
-        .btn-agregar button:hover, .btn-exportar button:hover {
+        .btn-agregar button:hover, .btn-exportar button:hover, #btn-gestionar-estados:hover {
             background-color: #002244;
             transform: scale(1.05);
         }
@@ -200,7 +180,7 @@
                 align-items: center;
             }
 
-            .btn-agregar button, .btn-exportar button {
+            .btn-agregar button, .btn-exportar button, #btn-gestionar-estados {
                 width: 100%;
             }
 
@@ -287,6 +267,43 @@
         .modal button:hover {
             background-color: #002244;
         }
+
+        /* Estilos para la paleta de colores */
+        .color-palette {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .color-option {
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            border: 2px solid #ccc;
+            cursor: pointer;
+            transition: border 0.3s;
+        }
+
+        .color-option.selected {
+            border: 2px solid var(--color-primario);
+        }
+
+        /* Estilos para botones de eliminación de estados */
+        .btn-eliminar-estado {
+            background-color: #dc3545;
+            color: #ffffff;
+            border: none;
+            padding: 5px 10px;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            margin-left: 10px;
+        }
+
+        .btn-eliminar-estado:hover {
+            background-color: #c82333;
+        }
     </style>
 </head>
 <body>
@@ -328,10 +345,11 @@
         </tbody>
     </table>
 
-    <!-- Botones para Descargar a Excel y Agregar Nueva Iniciativa -->
+    <!-- Botones para Descargar a Excel, Agregar Nueva Iniciativa y Gestionar Estados -->
     <div class="btn-agregar btn-exportar">
         <button id="btn-exportar">📥 Descargar a Excel</button>
         <button id="btn-agregar">+ Agregar Iniciativa</button>
+        <button id="btn-gestionar-estados">⚙️ Gestionar Estados</button>
     </div>
 
     <!-- Modal para Editar Iniciativas y Comentarios -->
@@ -342,6 +360,40 @@
             <input type="text" id="modal-input" />
             <textarea id="modal-textarea" rows="4"></textarea>
             <button id="guardar-cambio">Guardar</button>
+        </div>
+    </div>
+
+    <!-- Modal para Gestionar Estados -->
+    <div id="modalEstados" class="modal">
+        <div class="modal-content">
+            <span class="close-estados">&times;</span>
+            <h2>Gestionar Estados</h2>
+            <h3>Agregar Nuevo Estado</h3>
+            <form id="formAgregarEstado">
+                <label for="nuevo-estado-nombre">Nombre del Estado:</label>
+                <input type="text" id="nuevo-estado-nombre" required />
+                
+                <label>Selecciona un Color Suave:</label>
+                <div class="color-palette" id="color-palette">
+                    <!-- Opciones de colores suaves predefinidos -->
+                    <div class="color-option" data-color="#f8d7da" style="background-color: #f8d7da;"></div>
+                    <div class="color-option" data-color="#fff3cd" style="background-color: #fff3cd;"></div>
+                    <div class="color-option" data-color="#d1ecf1" style="background-color: #d1ecf1;"></div>
+                    <div class="color-option" data-color="#d1e7dd" style="background-color: #d1e7dd;"></div>
+                    <div class="color-option" data-color="#cce5ff" style="background-color: #cce5ff;"></div>
+                    <div class="color-option" data-color="#e2e3e5" style="background-color: #e2e3e5;"></div>
+                    <div class="color-option" data-color="#f5c6cb" style="background-color: #f5c6cb;"></div>
+                    <div class="color-option" data-color="#d4edda" style="background-color: #d4edda;"></div>
+                </div>
+                
+                <input type="hidden" id="nuevo-estado-color" required />
+                
+                <button type="submit">Agregar Estado</button>
+            </form>
+            <h3>Estados Existentes</h3>
+            <ul id="lista-estados-existentes">
+                <!-- Lista de estados existentes con opción para eliminar -->
+            </ul>
         </div>
     </div>
 
@@ -365,8 +417,28 @@
             { nombre: "Implementación de una oficina de gestión de proyectos con procesos estandarizados, documentación, seguimiento, control de proyectos y encuesta de satisfacción", responsable: "Mariel Deluca", estado: "No iniciada", comentarios: "" }
         ];
 
-        // Estados Disponibles
-        const estados = ["No iniciada", "En Desarrollo", "Descartada", "Finalizada"];
+        // Estados Disponibles (nombre y color)
+        let estados = [
+            { nombre: "No iniciada", color: "#f8d7da" },
+            { nombre: "En Desarrollo", color: "#fff3cd" },
+            { nombre: "Descartada", color: "#d1ecf1" },
+            { nombre: "Finalizada", color: "#d1e7dd" }
+        ];
+
+        // Cargar estados desde localStorage si existen
+        function cargarEstados() {
+            const estadosGuardados = localStorage.getItem("estados");
+            if (estadosGuardados) {
+                estados = JSON.parse(estadosGuardados);
+            } else {
+                localStorage.setItem("estados", JSON.stringify(estados));
+            }
+        }
+
+        // Guardar estados en localStorage
+        function guardarEstados() {
+            localStorage.setItem("estados", JSON.stringify(estados));
+        }
 
         // Referencias a Elementos del DOM
         const filtroResponsable = document.getElementById("filtro-responsable");
@@ -374,6 +446,7 @@
         const tbody = document.getElementById("tabla-cuerpo");
         const btnAgregar = document.getElementById("btn-agregar");
         const btnExportar = document.getElementById("btn-exportar");
+        const btnGestionarEstados = document.getElementById("btn-gestionar-estados");
 
         // Referencias al Modal y sus Elementos
         const modal = document.getElementById("miModal");
@@ -383,9 +456,18 @@
         const modalTextarea = document.getElementById("modal-textarea");
         const btnGuardarCambio = document.getElementById("guardar-cambio");
 
+        // Referencias al Modal de Estados
+        const modalEstados = document.getElementById("modalEstados");
+        const spanCerrarEstados = document.getElementsByClassName("close-estados")[0];
+        const formAgregarEstado = document.getElementById("formAgregarEstado");
+        const listaEstadosExistentes = document.getElementById("lista-estados-existentes");
+        const colorPalette = document.getElementById("color-palette");
+        const inputNuevoEstadoColor = document.getElementById("nuevo-estado-color");
+
         // Variables para Guardar el Estado Actual del Modal
         let filaActual = null;
         let campoActual = null;
+        let colorSeleccionado = null;
 
         // Función para Cargar los Filtros de Responsables y Estados
         function cargarFiltros() {
@@ -405,8 +487,8 @@
             filtroEstado.innerHTML = '<option value="Todos">Todos</option>';
             estados.forEach(estado => {
                 const option = document.createElement("option");
-                option.value = estado;
-                option.textContent = estado;
+                option.value = estado.nombre;
+                option.textContent = estado.nombre;
                 filtroEstado.appendChild(option);
             });
         }
@@ -423,22 +505,10 @@
                     (filtroEst === "Todos" || filtroEst === iniciativa.estado)) {
                         const tr = document.createElement("tr");
                         
-                        // Asignar clase según el estado para aplicar color de fondo
-                        switch (iniciativa.estado) {
-                            case "Finalizada":
-                                tr.classList.add("finalizada");
-                                break;
-                            case "En Desarrollo":
-                                tr.classList.add("en-desarrollo");
-                                break;
-                            case "No iniciada":
-                                tr.classList.add("no-iniciada");
-                                break;
-                            case "Descartada":
-                                tr.classList.add("descartada");
-                                break;
-                            default:
-                                break;
+                        // Obtener el color del estado
+                        const estadoObj = estados.find(e => e.nombre === iniciativa.estado);
+                        if (estadoObj) {
+                            tr.style.backgroundColor = estadoObj.color;
                         }
 
                         // Celda de Iniciativa - Editable mediante Modal
@@ -489,17 +559,31 @@
                         const selectEstado = document.createElement("select");
                         estados.forEach(estado => {
                             const option = document.createElement("option");
-                            option.value = estado;
-                            option.textContent = estado;
-                            if (estado === iniciativa.estado) {
+                            option.value = estado.nombre;
+                            option.textContent = estado.nombre;
+                            if (estado.nombre === iniciativa.estado) {
                                 option.selected = true;
                             }
                             selectEstado.appendChild(option);
                         });
+                        // Agregar opción para agregar un nuevo Estado
+                        const optionNuevoEstado = document.createElement("option");
+                        optionNuevoEstado.value = "Nuevo";
+                        optionNuevoEstado.textContent = "Añadir Nuevo";
+                        selectEstado.appendChild(optionNuevoEstado);
+
+                        // Manejar el cambio en el select de Estado
                         selectEstado.addEventListener("change", () => {
-                            iniciativas[index].estado = selectEstado.value;
-                            guardarDatos();
+                            if (selectEstado.value === "Nuevo") {
+                                // Abrir modal para añadir un nuevo Estado
+                                abrirModalEstados();
+                            } else {
+                                // Actualizar el Estado de la iniciativa
+                                iniciativas[index].estado = selectEstado.value;
+                                guardarDatos();
+                            }
                         });
+
                         estadoTd.appendChild(selectEstado);
                         tr.appendChild(estadoTd);
                         
@@ -553,22 +637,10 @@
             iniciativas.forEach(iniciativa => {
                 if ((filtroResp === "Todos" || filtroResp === iniciativa.responsable) &&
                     (filtroEst === "Todos" || filtroEst === iniciativa.estado)) {
-                        let colorFondo = "";
-                        switch (iniciativa.estado) {
-                            case "Finalizada":
-                                colorFondo = "#d1e7dd"; // Verde azulado claro
-                                break;
-                            case "En Desarrollo":
-                                colorFondo = "#fff3cd"; // Amarillo claro
-                                break;
-                            case "No iniciada":
-                                colorFondo = "#f8d7da"; // Rojo claro
-                                break;
-                            case "Descartada":
-                                colorFondo = "#d1ecf1"; // Celeste claro
-                                break;
-                            default:
-                                colorFondo = "#ffffff"; // Blanco
+                        let colorFondo = "#ffffff"; // Blanco por defecto
+                        const estadoObj = estados.find(e => e.nombre === iniciativa.estado);
+                        if (estadoObj) {
+                            colorFondo = estadoObj.color;
                         }
 
                         tablaHTML += `
@@ -595,6 +667,11 @@
             a.download = "Iniciativas_Aprobadas_2024.xls";
             a.click();
             URL.revokeObjectURL(url);
+        });
+
+        // Event Listener para Gestionar Estados
+        btnGestionarEstados.addEventListener("click", () => {
+            abrirModalEstados();
         });
 
         // Función para Guardar Datos en LocalStorage y Actualizar Filtros y Tabla
@@ -636,19 +713,39 @@
             modal.style.display = "block";
         }
 
-        // Event Listener para Cerrar el Modal al Hacer Clic en la 'X'
+        // Función para Abrir el Modal de Estados
+        function abrirModalEstados() {
+            modalEstados.style.display = "block";
+            actualizarListaEstadosExistentes();
+            // Resetear la selección de color
+            colorSeleccionado = null;
+            document.querySelectorAll('.color-option').forEach(option => {
+                option.classList.remove('selected');
+            });
+            inputNuevoEstadoColor.value = "";
+        }
+
+        // Event Listener para Cerrar el Modal al Hacer Clic en la 'X' del Modal de Iniciativas
         spanCerrar.onclick = function() {
             modal.style.display = "none";
         }
 
-        // Event Listener para Cerrar el Modal al Hacer Clic Fuera del Contenido del Modal
+        // Event Listener para Cerrar el Modal al Hacer Clic Fuera del Contenido del Modal de Iniciativas
         window.onclick = function(event) {
             if (event.target == modal) {
                 modal.style.display = "none";
             }
+            if (event.target == modalEstados) {
+                modalEstados.style.display = "none";
+            }
         }
 
-        // Event Listener para Guardar Cambios desde el Modal
+        // Event Listener para Cerrar el Modal de Estados al Hacer Clic en la 'X'
+        spanCerrarEstados.onclick = function() {
+            modalEstados.style.display = "none";
+        }
+
+        // Event Listener para Guardar Cambios desde el Modal de Iniciativas
         btnGuardarCambio.addEventListener("click", () => {
             if (campoActual === 'nombre') {
                 iniciativas[filaActual].nombre = modalInput.value.trim() || "Sin Nombre";
@@ -667,9 +764,124 @@
             modal.style.display = "none";
         });
 
+        // Event Listener para Agregar Nuevo Estado
+        formAgregarEstado.addEventListener("submit", (e) => {
+            e.preventDefault();
+            const nombreNuevoEstado = document.getElementById("nuevo-estado-nombre").value.trim();
+            const colorNuevoEstado = document.getElementById("nuevo-estado-color").value;
+
+            if (nombreNuevoEstado === "") {
+                alert("El nombre del estado no puede estar vacío.");
+                return;
+            }
+
+            if (!colorNuevoEstado) {
+                alert("Por favor, selecciona un color para el estado.");
+                return;
+            }
+
+            // Verificar si el estado ya existe
+            const estadoExistente = estados.find(e => e.nombre.toLowerCase() === nombreNuevoEstado.toLowerCase());
+            if (estadoExistente) {
+                alert("El estado ya existe.");
+                return;
+            }
+
+            // Verificar si el color ya está asignado a otro estado (opcional)
+            const colorDuplicado = estados.find(e => e.color === colorNuevoEstado);
+            if (colorDuplicado) {
+                alert("El color seleccionado ya está asignado a otro estado.");
+                return;
+            }
+
+            // Agregar el nuevo estado
+            estados.push({ nombre: nombreNuevoEstado, color: colorNuevoEstado });
+            guardarEstados();
+            cargarFiltros();
+            renderTabla();
+            formAgregarEstado.reset();
+            actualizarListaEstadosExistentes();
+
+            // Resetear la selección de color
+            colorSeleccionado = null;
+            document.querySelectorAll('.color-option').forEach(option => {
+                option.classList.remove('selected');
+            });
+            inputNuevoEstadoColor.value = "";
+        });
+
+        // Función para Actualizar la Lista de Estados Existentes en el Modal
+        function actualizarListaEstadosExistentes() {
+            listaEstadosExistentes.innerHTML = "";
+            estados.forEach((estado, index) => {
+                const li = document.createElement("li");
+                li.style.display = "flex";
+                li.style.alignItems = "center";
+                li.style.marginBottom = "10px";
+
+                const colorSpan = document.createElement("span");
+                colorSpan.style.display = "inline-block";
+                colorSpan.style.width = "20px";
+                colorSpan.style.height = "20px";
+                colorSpan.style.backgroundColor = estado.color;
+                colorSpan.style.marginRight = "10px";
+                colorSpan.style.borderRadius = "50%";
+                colorSpan.style.border = "1px solid #ccc";
+
+                const nombreSpan = document.createElement("span");
+                nombreSpan.textContent = estado.nombre;
+
+                // Opción para eliminar el estado si no está asignado a ninguna iniciativa
+                const btnEliminar = document.createElement("button");
+                btnEliminar.textContent = "Eliminar";
+                btnEliminar.classList.add("btn-eliminar-estado");
+                btnEliminar.addEventListener("click", () => {
+                    eliminarEstado(index);
+                });
+
+                li.appendChild(colorSpan);
+                li.appendChild(nombreSpan);
+                li.appendChild(btnEliminar);
+
+                listaEstadosExistentes.appendChild(li);
+            });
+        }
+
+        // Función para Eliminar un Estado
+        function eliminarEstado(index) {
+            const estadoAEliminar = estados[index].nombre;
+            // Verificar si alguna iniciativa está usando este estado
+            const estaUsado = iniciativas.some(i => i.estado === estadoAEliminar);
+            if (estaUsado) {
+                alert("No se puede eliminar el estado porque está asignado a una o más iniciativas.");
+                return;
+            }
+            if (confirm(`¿Estás seguro de que deseas eliminar el estado "${estadoAEliminar}"?`)) {
+                estados.splice(index, 1);
+                guardarEstados();
+                cargarFiltros();
+                renderTabla();
+                actualizarListaEstadosExistentes();
+            }
+        }
+
+        // Función para Manejar la Selección de Colores en la Paleta
+        document.querySelectorAll('.color-option').forEach(option => {
+            option.addEventListener('click', () => {
+                // Remover selección previa
+                document.querySelectorAll('.color-option').forEach(o => o.classList.remove('selected'));
+                // Añadir clase 'selected' al color clicado
+                option.classList.add('selected');
+                // Guardar el color seleccionado en el input oculto
+                colorSeleccionado = option.getAttribute('data-color');
+                inputNuevoEstadoColor.value = colorSeleccionado;
+            });
+        });
+
         // Función de Inicialización de la Página
         function init() {
             cargarDatos();
+            cargarEstados();
             cargarFiltros();
             renderTabla();
 
