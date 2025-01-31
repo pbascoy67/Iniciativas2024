@@ -347,7 +347,7 @@
 
   <script>
     // ================================
-    //  CONFIGURACIÓN DE LA “API”
+    //  CONFIGURACIÓN DE LA API
     // ================================
     // Aquí pones la URL de tu Google Apps Script (doGet / doPost)
     const URL_API = "https://script.google.com/a/macros/blatorh.com/s/AKfycbze2r9E1AmjBHCljzYHuPwlSN6u547oqJ2OMpvdkYxusHnDoEMCJeLp74liWMjX2yhzag/exec";
@@ -385,6 +385,13 @@
         const respuesta = await fetch(URL_API);
         const datos = await respuesta.json(); 
         // Asumimos que `datos` es un array de objetos [{nombre, responsable, estado, comentarios}, ...]
+
+        // Verifica si hay un error en la respuesta
+        if (datos.error) {
+          console.error("Error desde la API:", datos.error);
+          return;
+        }
+
         iniciativas = datos;
 
         // Renderizamos tabla y filtros
@@ -410,8 +417,13 @@
         const resultado = await respuesta.json();
         console.log("Respuesta de Sheets:", resultado);
 
-        // Al terminar de guardar, volvemos a recargar los datos
-        await cargarDatosDesdeSheets();
+        if (resultado.status === "ok") {
+          // Al guardar correctamente, volvemos a cargar los datos
+          await cargarDatosDesdeSheets();
+        } else {
+          console.error("Error al guardar en Sheets:", resultado.mensaje);
+        }
+
       } catch (error) {
         console.error("Error al guardar en Google Sheets:", error);
       }
@@ -516,7 +528,7 @@
             } else {
               // Actualizar localmente
               iniciativas[index].responsable = selectResponsable.value;
-              // Como la hoja hace “append” con doPost, enviamos la fila actualizada:
+              // Guardamos en Sheets (esto creará una nueva fila)
               guardarEnSheets(iniciativas[index]);
             }
           });
@@ -589,15 +601,19 @@
       modal.style.display = "block";
     }
 
+    // Cerrar el modal al hacer clic en la 'X'
     spanCerrar.onclick = function() {
       modal.style.display = "none";
     };
+
+    // Cerrar el modal al hacer clic fuera del contenido del modal
     window.onclick = function(event) {
       if (event.target == modal) {
         modal.style.display = "none";
       }
     };
 
+    // Guardar cambios desde el modal
     btnGuardarCambio.addEventListener("click", () => {
       if (campoActual === 'nombre') {
         iniciativas[filaActual].nombre = modalInput.value.trim() || "Sin Nombre";
@@ -629,7 +645,6 @@
         estado: "No iniciada",
         comentarios: ""
       };
-      iniciativas.push(nueva);
       // Guardamos en Sheets (esto creará una nueva fila)
       guardarEnSheets(nueva);
     });
@@ -722,8 +737,8 @@
       filtroEstado.addEventListener("change", renderTabla);
     }
 
-    // Ejecutamos init
-    init();
+    // Ejecutamos init al cargar la página
+    document.addEventListener("DOMContentLoaded", init);
   </script>
 </body>
 </html>
