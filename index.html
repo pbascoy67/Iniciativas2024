@@ -263,16 +263,29 @@
     .btn-eliminar-estado:hover {
       background-color: #c82333;
     }
-    /* Área para gráfico y leyenda (lado a lado) */
+    /* Área para gráfico y leyenda en pantalla completa */
     #chartContainer {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 20px;
-      max-width: 600px;
-      margin: 30px auto;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: var(--color-secundario);
+      z-index: 300;
+      display: none;
+      overflow: auto;
+      padding: 20px;
     }
-    /* Aumentamos el tamaño del gráfico de 250px a 375px */
+    /* Ajustamos el contenedor interno para centrar gráfico y leyenda */
+    #chartContent {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 20px;
+      width: 100%;
+      height: 100%;
+    }
+    /* El gráfico se agranda a 375px */
     #chartDonut {
       max-width: 375px;
       max-height: 375px;
@@ -280,6 +293,24 @@
     #chartLegend {
       font-size: 16px;
       color: var(--color-texto-general);
+    }
+    /* Botón para cerrar el gráfico */
+    #btnCerrarGrafico {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      background-color: var(--color-boton);
+      color: var(--color-boton-texto);
+      border: none;
+      padding: 10px 20px;
+      font-size: 16px;
+      border-radius: 4px;
+      cursor: pointer;
+      transition: background-color 0.3s, transform 0.2s;
+    }
+    #btnCerrarGrafico:hover {
+      background-color: #002244;
+      transform: scale(1.05);
     }
     /* Área de detalle para mostrar iniciativas filtradas */
     #detailContainer {
@@ -356,10 +387,6 @@
       <button id="btn-gestionar-estados">⚙️ Gestionar Estados</button>
       <button id="btn-graficos">Graficos</button>
     </div>
-    <div id="chartContainer" style="display: none;">
-      <canvas id="chartDonut"></canvas>
-      <div id="chartLegend"></div>
-    </div>
   </div>
   
   <!-- Vista de Detalle -->
@@ -379,6 +406,15 @@
       </tbody>
     </table>
     <button id="btnVolver">Volver</button>
+  </div>
+  
+  <!-- Vista de Gráfico (Overlay de pantalla completa) -->
+  <div id="chartContainer">
+    <button id="btnCerrarGrafico">Cerrar</button>
+    <div id="chartContent">
+      <canvas id="chartDonut"></canvas>
+      <div id="chartLegend"></div>
+    </div>
   </div>
   
   <!-- Modal para Editar Iniciativas -->
@@ -493,7 +529,7 @@
     const detailTableBody = document.getElementById("detailTableBody");
     const btnVolver = document.getElementById("btnVolver");
     
-    // Referencias para gráfico
+    // Contenedor para gráfico en overlay (pantalla completa)
     const chartContainer = document.getElementById("chartContainer");
     const chartLegend = document.getElementById("chartLegend");
     let donutChart;
@@ -673,7 +709,7 @@
       URL.revokeObjectURL(url);
     });
     
-    // Obtener color de encabezado
+    // Obtener color del encabezado
     function getHeaderColor() {
       const header = getComputedStyle(document.documentElement).getPropertyValue('--color-header').trim();
       return header || "#002244";
@@ -684,14 +720,14 @@
       abrirModalEstados();
     });
     
-    // Guardar datos en LocalStorage y actualizar
+    // Guardar datos y actualizar
     function guardarDatos() {
       localStorage.setItem("iniciativas", JSON.stringify(iniciativas));
       cargarFiltros();
       renderTabla();
     }
     
-    // Cargar datos desde LocalStorage
+    // Cargar datos desde localStorage
     function cargarDatos() {
       const datosGuardados = localStorage.getItem("iniciativas");
       if (datosGuardados) {
@@ -935,21 +971,22 @@
       detailContainer.style.display = "block";
     }
     
-    // Botón "Volver" en la vista de detalle
+    // Botón "Volver" en detalle
     btnVolver.addEventListener("click", () => {
       detailContainer.style.display = "none";
       mainView.style.display = "block";
     });
     
-    // Botón "Graficos": Mostrar/ocultar área de gráfico y generar gráfico
+    // Botón "Graficos": Mostrar el gráfico en pantalla completa
     btnGraficos.addEventListener("click", () => {
-      if (chartContainer.style.display === "none" || chartContainer.style.display === "") {
-        generarGrafico();
-        chartContainer.style.display = "flex";
-        chartContainer.scrollIntoView({ behavior: "smooth" });
-      } else {
-        chartContainer.style.display = "none";
-      }
+      // Mostrar overlay del gráfico
+      generarGrafico();
+      chartContainer.style.display = "block";
+    });
+    
+    // Botón "Cerrar" en el overlay del gráfico
+    document.getElementById("btnCerrarGrafico").addEventListener("click", () => {
+      chartContainer.style.display = "none";
     });
     
     // Inicialización
