@@ -354,13 +354,14 @@
     // ================================
     //  CONFIGURACIÓN DE LA API
     // ================================
-    // Aquí pones la URL de tu Google Apps Script (doGet / doPost)
+    const CORS_PROXY = "https://cors-anywhere.herokuapp.com/"; // Proxy de CORS público
     const URL_API = "https://script.google.com/a/macros/blatorh.com/s/AKfycbze2r9E1AmjBHCljzYHuPwlSN6u547oqJ2OMpvdkYxusHnDoEMCJeLp74liWMjX2yhzag/exec";
+    const API_WITH_PROXY = CORS_PROXY + URL_API;
 
     // Arreglo que almacenará las iniciativas cargadas desde Google Sheets
     let iniciativas = [];
 
-    // Estados disponibles (añadido "On Hold")
+    // Estados disponibles (incluyendo "On Hold")
     const estados = ["No iniciada", "En Desarrollo", "Descartada", "Finalizada", "On Hold"];
 
     // Referencias a Elementos del DOM
@@ -387,7 +388,7 @@
     // ================================
     async function cargarDatosDesdeSheets() {
       try {
-        const respuesta = await fetch(URL_API);
+        const respuesta = await fetch(API_WITH_PROXY);
         const datos = await respuesta.json(); 
         console.log("Datos recibidos de Sheets:", datos); // Para depuración
 
@@ -415,7 +416,7 @@
       try {
         console.log("Enviando datos a Sheets:", iniciativaObj); // Para depuración
         // POST con los datos de la iniciativa
-        const respuesta = await fetch(URL_API, {
+        const respuesta = await fetch(API_WITH_PROXY, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify(iniciativaObj)
