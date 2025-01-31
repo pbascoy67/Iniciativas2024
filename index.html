@@ -1,696 +1,729 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Iniciativas Aprobadas 2024</title>
-    <style>
-        :root {
-            --color-fondo: #f0f4f8;
-            --color-primario: #003366;
-            --color-secundario: #ffffff;
-            --color-texto: #ffffff;
-            --color-texto-general: #333333;
-            --color-borde: #cccccc;
-            --color-hover: #e6f0fa;
-            --color-header: #002244;
-            --color-boton: #003366;
-            --color-boton-texto: #ffffff;
-            --color-finalizada: #d1e7dd;
-            --color-en-desarrollo: #fff3cd;
-            --color-no-iniciada: #f8d7da;
-            --color-descartada: #d1ecf1;
-        }
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Iniciativas Aprobadas 2024</title>
+  <style>
+    :root {
+      --color-fondo: #f0f4f8;
+      --color-primario: #003366;
+      --color-secundario: #ffffff;
+      --color-texto: #ffffff;
+      --color-texto-general: #333333;
+      --color-borde: #cccccc;
+      --color-hover: #e6f0fa;
+      --color-header: #002244;
+      --color-boton: #003366;
+      --color-boton-texto: #ffffff;
+      --color-finalizada: #d1e7dd;
+      --color-en-desarrollo: #fff3cd;
+      --color-no-iniciada: #f8d7da;
+      --color-descartada: #d1ecf1;
+    }
 
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: var(--color-fondo);
-            margin: 0;
-            padding: 20px;
-            color: var(--color-texto-general);
-        }
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background-color: var(--color-fondo);
+      margin: 0;
+      padding: 20px;
+      color: var(--color-texto-general);
+    }
 
-        .encabezado {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            background-color: var(--color-header);
-            padding: 10px 20px;
-            border-radius: 8px;
-            margin-bottom: 20px;
-            position: relative;
-        }
+    .encabezado {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background-color: var(--color-header);
+      padding: 10px 20px;
+      border-radius: 8px;
+      margin-bottom: 20px;
+      position: relative;
+    }
 
-        .encabezado h1 {
-            color: var(--color-texto);
-            font-size: 2em;
-            margin: 0;
-            text-align: center;
-            width: 100%;
-        }
+    .encabezado h1 {
+      color: var(--color-texto);
+      font-size: 2em;
+      margin: 0;
+      text-align: center;
+      width: 100%;
+    }
 
-        .encabezado img {
-            height: 60px;
-            position: absolute;
-            right: 20px;
-        }
+    .encabezado img {
+      height: 60px;
+      position: absolute;
+      right: 20px;
+    }
 
-        .filtros {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 20px;
-            margin-bottom: 20px;
-            justify-content: center;
-            background-color: var(--color-header);
-            padding: 10px 20px;
-            border-radius: 8px;
-        }
+    .filtros {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 20px;
+      margin-bottom: 20px;
+      justify-content: center;
+      background-color: var(--color-header);
+      padding: 10px 20px;
+      border-radius: 8px;
+    }
 
-        .filtros div {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
+    .filtros div {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
 
-        label {
-            font-weight: bold;
-            color: var(--color-texto);
-        }
+    label {
+      font-weight: bold;
+      color: var(--color-texto);
+    }
 
-        select {
-            padding: 5px 10px;
-            border: 1px solid var(--color-borde);
-            border-radius: 4px;
-            background-color: var(--color-secundario);
-            transition: border 0.3s;
-            color: var(--color-texto-general);
-        }
+    select {
+      padding: 5px 10px;
+      border: 1px solid var(--color-borde);
+      border-radius: 4px;
+      background-color: var(--color-secundario);
+      transition: border 0.3s;
+      color: var(--color-texto-general);
+    }
 
-        select:focus {
-            border-color: var(--color-primario);
-            outline: none;
-        }
+    select:focus {
+      border-color: var(--color-primario);
+      outline: none;
+    }
 
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 20px;
-            background-color: var(--color-secundario);
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-        }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 20px;
+      background-color: var(--color-secundario);
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    }
 
-        th, td {
-            border: 1px solid var(--color-borde);
-            padding: 12px 15px;
-            text-align: left;
-            transition: background-color 0.3s;
-            position: relative;
-        }
+    th, td {
+      border: 1px solid var(--color-borde);
+      padding: 12px 15px;
+      text-align: left;
+      transition: background-color 0.3s;
+      position: relative;
+    }
 
-        th {
-            background-color: var(--color-header);
-            color: var(--color-texto);
-            position: sticky;
-            top: 0;
-            z-index: 2;
-            font-weight: bold;
-        }
+    th {
+      background-color: var(--color-header);
+      color: var(--color-texto);
+      position: sticky;
+      top: 0;
+      z-index: 2;
+      font-weight: bold;
+    }
 
-        tr:nth-child(even) {
-            background-color: #e6f0fa;
-        }
+    tr:nth-child(even) {
+      background-color: #e6f0fa;
+    }
 
-        tr:hover {
-            background-color: var(--color-hover);
-        }
+    tr:hover {
+      background-color: var(--color-hover);
+    }
 
-        tr.finalizada {
-            background-color: var(--color-finalizada) !important;
-        }
+    tr.finalizada {
+      background-color: var(--color-finalizada) !important;
+    }
 
-        tr.en-desarrollo {
-            background-color: var(--color-en-desarrollo) !important;
-        }
+    tr.en-desarrollo {
+      background-color: var(--color-en-desarrollo) !important;
+    }
 
-        tr.no-iniciada {
-            background-color: var(--color-no-iniciada) !important;
-        }
+    tr.no-iniciada {
+      background-color: var(--color-no-iniciada) !important;
+    }
 
-        tr.descartada {
-            background-color: var(--color-descartada) !important;
-        }
+    tr.descartada {
+      background-color: var(--color-descartada) !important;
+    }
 
-        input[type="text"], select, textarea {
-            width: 100%;
-            padding: 8px;
-            border: 1px solid var(--color-borde);
-            border-radius: 4px;
-            box-sizing: border-box;
-            transition: border 0.3s;
-            background-color: var(--color-secundario);
-            color: var(--color-texto-general);
-            resize: vertical;
-        }
+    input[type="text"], select, textarea {
+      width: 100%;
+      padding: 8px;
+      border: 1px solid var(--color-borde);
+      border-radius: 4px;
+      box-sizing: border-box;
+      transition: border 0.3s;
+      background-color: var(--color-secundario);
+      color: var(--color-texto-general);
+      resize: vertical;
+    }
 
-        input[type="text"]:focus, select:focus, textarea:focus {
-            border-color: var(--color-primario);
-            outline: none;
-        }
+    input[type="text"]:focus, select:focus, textarea:focus {
+      border-color: var(--color-primario);
+      outline: none;
+    }
 
-        textarea.expandable-textarea {
-            min-height: 60px;
-            overflow: hidden;
-            transition: min-height 0.3s;
-        }
+    textarea.expandable-textarea {
+      min-height: 60px;
+      overflow: hidden;
+      transition: min-height 0.3s;
+    }
 
-        textarea.expandable-textarea:focus {
-            min-height: 120px;
-        }
+    textarea.expandable-textarea:focus {
+      min-height: 120px;
+    }
 
-        .btn-agregar, .btn-exportar {
-            display: flex;
-            justify-content: flex-end;
-            margin-top: 10px;
-            gap: 10px;
-        }
+    .btn-agregar, .btn-exportar {
+      display: flex;
+      justify-content: flex-end;
+      margin-top: 10px;
+      gap: 10px;
+    }
 
-        .btn-agregar button, .btn-exportar button {
-            background-color: var(--color-boton);
-            color: var(--color-boton-texto);
-            border: none;
-            padding: 10px 20px;
-            font-size: 16px;
-            border-radius: 4px;
-            cursor: pointer;
-            transition: background-color 0.3s, transform 0.2s;
-        }
+    .btn-agregar button, .btn-exportar button {
+      background-color: var(--color-boton);
+      color: var(--color-boton-texto);
+      border: none;
+      padding: 10px 20px;
+      font-size: 16px;
+      border-radius: 4px;
+      cursor: pointer;
+      transition: background-color 0.3s, transform 0.2s;
+    }
 
-        .btn-agregar button:hover, .btn-exportar button:hover {
-            background-color: #002244;
-            transform: scale(1.05);
-        }
+    .btn-agregar button:hover, .btn-exportar button:hover {
+      background-color: #002244;
+      transform: scale(1.05);
+    }
 
-        @media (max-width: 768px) {
-            th, td {
-                padding: 8px 10px;
-            }
+    @media (max-width: 768px) {
+      th, td {
+        padding: 8px 10px;
+      }
 
-            .btn-agregar, .btn-exportar {
-                flex-direction: column;
-                align-items: center;
-            }
+      .btn-agregar, .btn-exportar {
+        flex-direction: column;
+        align-items: center;
+      }
 
-            .btn-agregar button, .btn-exportar button {
-                width: 100%;
-            }
+      .btn-agregar button, .btn-exportar button {
+        width: 100%;
+      }
 
-            .filtros {
-                flex-direction: column;
-                align-items: center;
-            }
+      .filtros {
+        flex-direction: column;
+        align-items: center;
+      }
 
-            .encabezado {
-                flex-direction: column;
-                align-items: center;
-            }
+      .encabezado {
+        flex-direction: column;
+        align-items: center;
+      }
 
-            .encabezado img {
-                position: static;
-                margin: 10px 0 0 0;
-            }
+      .encabezado img {
+        position: static;
+        margin: 10px 0 0 0;
+      }
 
-            .encabezado h1 {
-                text-align: center;
-            }
-        }
+      .encabezado h1 {
+        text-align: center;
+      }
+    }
 
-        .modal {
-            display: none;
-            position: fixed;
-            z-index: 100;
-            left: 0;
-            top: 0;
-            width: 100%;
-            height: 100%;
-            overflow: auto;
-            background-color: rgba(0,0,0,0.5);
-        }
+    .modal {
+      display: none;
+      position: fixed;
+      z-index: 100;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      overflow: auto;
+      background-color: rgba(0,0,0,0.5);
+    }
 
-        .modal-content {
-            background-color: var(--color-secundario);
-            margin: 10% auto;
-            padding: 20px;
-            border: 1px solid var(--color-borde);
-            width: 80%;
-            border-radius: 8px;
-            position: relative;
-        }
+    .modal-content {
+      background-color: var(--color-secundario);
+      margin: 10% auto;
+      padding: 20px;
+      border: 1px solid var(--color-borde);
+      width: 80%;
+      border-radius: 8px;
+      position: relative;
+    }
 
-        .close {
-            color: var(--color-texto-general);
-            position: absolute;
-            top: 10px;
-            right: 20px;
-            font-size: 28px;
-            font-weight: bold;
-            cursor: pointer;
-        }
+    .close {
+      color: var(--color-texto-general);
+      position: absolute;
+      top: 10px;
+      right: 20px;
+      font-size: 28px;
+      font-weight: bold;
+      cursor: pointer;
+    }
 
-        .close:hover,
-        .close:focus {
-            color: var(--color-primario);
-            text-decoration: none;
-            cursor: pointer;
-        }
+    .close:hover,
+    .close:focus {
+      color: var(--color-primario);
+      text-decoration: none;
+      cursor: pointer;
+    }
 
-        .modal textarea, .modal input[type="text"] {
-            width: 100%;
-            padding: 10px;
-            margin-top: 10px;
-            margin-bottom: 20px;
-            border: 1px solid var(--color-borde);
-            border-radius: 4px;
-            resize: vertical;
-            color: var(--color-texto-general);
-        }
+    .modal textarea, .modal input[type="text"] {
+      width: 100%;
+      padding: 10px;
+      margin-top: 10px;
+      margin-bottom: 20px;
+      border: 1px solid var(--color-borde);
+      border-radius: 4px;
+      resize: vertical;
+      color: var(--color-texto-general);
+    }
 
-        .modal button {
-            background-color: var(--color-primario);
-            color: var(--color-boton-texto);
-            border: none;
-            padding: 10px 20px;
-            border-radius: 4px;
-            cursor: pointer;
-            transition: background-color 0.3s;
-        }
+    .modal button {
+      background-color: var(--color-primario);
+      color: var(--color-boton-texto);
+      border: none;
+      padding: 10px 20px;
+      border-radius: 4px;
+      cursor: pointer;
+      transition: background-color 0.3s;
+    }
 
-        .modal button:hover {
-            background-color: #002244;
-        }
-    </style>
+    .modal button:hover {
+      background-color: #002244;
+    }
+  </style>
 </head>
 <body>
-    <!-- Encabezado con Título Centrado y Logo a la Derecha -->
-    <div class="encabezado">
-        <h1>Iniciativas Aprobadas 2024</h1>
-        <img src="blatorh.png" alt="Logo de Blatorh">
-    </div>
+  <!-- Encabezado con Título Centrado y Logo a la Derecha -->
+  <div class="encabezado">
+    <h1>Iniciativas Aprobadas 2024</h1>
+    <img src="blatorh.png" alt="Logo de Blatorh">
+  </div>
 
-    <!-- Sección de Filtros con Fondo Azul Oscuro y Texto Blanco -->
-    <div class="filtros">
-        <div>
-            <label for="filtro-responsable">Filtrar por Responsable:</label>
-            <select id="filtro-responsable">
-                <option value="Todos">Todos</option>
-            </select>
-        </div>
-        
-        <div>
-            <label for="filtro-estado">Filtrar por Estado:</label>
-            <select id="filtro-estado">
-                <option value="Todos">Todos</option>
-            </select>
-        </div>
+  <!-- Sección de Filtros con Fondo Azul Oscuro y Texto Blanco -->
+  <div class="filtros">
+    <div>
+      <label for="filtro-responsable">Filtrar por Responsable:</label>
+      <select id="filtro-responsable">
+        <option value="Todos">Todos</option>
+      </select>
     </div>
     
-    <!-- Tabla de Iniciativas -->
-    <table>
-        <thead>
-            <tr>
-                <th style="width: 35%">Iniciativas Aprobadas</th>
-                <th style="width: 20%">Responsables</th>
-                <th style="width: 20%">Estado de la Iniciativa</th>
-                <th style="width: 20%">Comentarios</th>
-            </tr>
-        </thead>
-        <tbody id="tabla-cuerpo">
-            <!-- Filas de la tabla serán generadas dinámicamente -->
-        </tbody>
-    </table>
-
-    <!-- Botones para Descargar a Excel y Agregar Nueva Iniciativa -->
-    <div class="btn-agregar btn-exportar">
-        <button id="btn-exportar">📥 Descargar a Excel</button>
-        <button id="btn-agregar">+ Agregar Iniciativa</button>
+    <div>
+      <label for="filtro-estado">Filtrar por Estado:</label>
+      <select id="filtro-estado">
+        <option value="Todos">Todos</option>
+      </select>
     </div>
+  </div>
+  
+  <!-- Tabla de Iniciativas -->
+  <table>
+    <thead>
+      <tr>
+        <th style="width: 35%">Iniciativas Aprobadas</th>
+        <th style="width: 20%">Responsables</th>
+        <th style="width: 20%">Estado de la Iniciativa</th>
+        <th style="width: 20%">Comentarios</th>
+      </tr>
+    </thead>
+    <tbody id="tabla-cuerpo">
+      <!-- Filas de la tabla serán generadas dinámicamente -->
+    </tbody>
+  </table>
 
-    <!-- Modal para Editar Iniciativas y Comentarios -->
-    <div id="miModal" class="modal">
-        <div class="modal-content">
-            <span class="close">&times;</span>
-            <h2 id="modal-titulo">Editar</h2>
-            <input type="text" id="modal-input" />
-            <textarea id="modal-textarea" rows="4"></textarea>
-            <button id="guardar-cambio">Guardar</button>
-        </div>
+  <!-- Botones para Descargar a Excel y Agregar Nueva Iniciativa -->
+  <div class="btn-agregar btn-exportar">
+    <button id="btn-exportar">📥 Descargar a Excel</button>
+    <button id="btn-agregar">+ Agregar Iniciativa</button>
+  </div>
+
+  <!-- Modal para Editar Iniciativas y Comentarios -->
+  <div id="miModal" class="modal">
+    <div class="modal-content">
+      <span class="close">&times;</span>
+      <h2 id="modal-titulo">Editar</h2>
+      <input type="text" id="modal-input" />
+      <textarea id="modal-textarea" rows="4"></textarea>
+      <button id="guardar-cambio">Guardar</button>
     </div>
+  </div>
 
-    <script>
-        // Función para eliminar acentos de una cadena de texto
-        function removeAccents(str) {
-            return str.normalize("NFD").replace(/[\u0300-\u036f]/g, "");
-        }
+  <script>
+    // ================================
+    //  CONFIGURACIÓN DE LA “API”
+    // ================================
+    // Aquí pones la URL de tu Google Apps Script (doGet / doPost)
+    const URL_API = "https://script.google.com/a/macros/blatorh.com/s/AKfycbze2r9E1AmjBHCljzYHuPwlSN6u547oqJ2OMpvdkYxusHnDoEMCJeLp74liWMjX2yhzag/exec";
 
-        // Datos Iniciales de las Iniciativas
-        let iniciativas = [
-            { nombre: "Generar un set de reportes en nuestra base de SF Demo con la herramienta de People Analityc para luego ser ofrecido a los distintos clientes", responsable: "Anthony Rivero", estado: "No iniciada", comentarios: "" },
-            { nombre: "Luego de la implementación de la herramienta en el cliente Roemmers analizar si es viable y recomendable ofrecerlo a otros clientes.", responsable: "Anthony Rivero", estado: "No iniciada", comentarios: "" },
-            { nombre: "Desarrollar nuevas funcionalidades avanzadas de gestión de datos maestros en la plataforma SAP SuccessFactors. Ejemplo desarrollos en BTP, clonador de legajos en EC,Carga masiva de datos en EC.", responsable: "Ariel Di Prinzio", estado: "No iniciada", comentarios: "" },
-            { nombre: "Generar para poder implementar Payroll Control Center en distintos clientes teniendo como base el RDS ofrecido por SAP y viendo el funcionamiento en la implementación actual en Ford", responsable: "Pablo Bascoy", estado: "No iniciada", comentarios: "" },
-            { nombre: "Elección de la herramienta, propuesta de procesos e implementación para mejorar las oportunidades, relación con los clientes y mejorar las ventas", responsable: "Pablo Bascoy", estado: "No iniciada", comentarios: "" },
-            { nombre: "Generar blogs, artículos, infografías y videos de calidad para la página web de BlatoRH. Los usuarios deberán registrarse para acceder a este contenido, lo que nos permitirá generar nuevos contactos.", responsable: "Francisco Torres", estado: "No iniciada", comentarios: "" },
-            { nombre: "Aumentar la interacción y visibilidad de BlatoRH en redes sociales clave como LinkedIn, Instagram y Facebook. Compartir proyectos finalizados con éxito para dar a conocer nuestros servicios.", responsable: "Francisco Torres", estado: "No iniciada", comentarios: "" },
-            { nombre: "Desarrollo de un brochure corporativo que presente de manera detallada y atractiva los servicios ofrecidos por nuestra firma.", responsable: "Leonardo Blau", estado: "No iniciada", comentarios: "" },
-            { nombre: "Desarrollo de documentos con preguntas clave por módulo, para poder comprender mejor las necesidades del cliente y armar propuestas a la medida.", responsable: "Gabriela Gimenez", estado: "No iniciada", comentarios: "" },
-            { nombre: "Creación de un documento que resuma la funcionalidad estándar de los módulos, para poder presentarlo rápidamente a clientes y prospectos.", responsable: "Gabriela Gimenez", estado: "No iniciada", comentarios: "" },
-            { nombre: "Comunicación del programa de incentivos para nuestro equipo, con el objetivo de motivar y recompensar la generación de nuevas oportunidades con nuevos clientes que generen ingresos.", responsable: "Leonardo Blau", estado: "No iniciada", comentarios: "" },
-            { nombre: "Propuesta de un programa de capacitación, tanto para desarrollar las capacidades actuales como para cubrir brechas de conocimiento en el equipo.", responsable: "Mariel Deluca", estado: "No iniciada", comentarios: "" },
-            { nombre: "Relevar desarrollos existentes en las distintas instancias de los clientes con el objetivo de poder hacer un paquete vendible a otros clientes, como también nuevos desarrollos que tengan dicho fin.", responsable: "Manuel Cervantes", estado: "No iniciada", comentarios: "" },
-            { nombre: "Crear un espacio compartido donde todo el equipo pueda aportar y registrar distintas ideas e iniciativas que detecten, para posteriormente analizarlas y evaluar su viabilidad de presentarlas a los clientes.", responsable: "Irene Mendez", estado: "No iniciada", comentarios: "" },
-            { nombre: "Implementación de una oficina de gestión de proyectos con procesos estandarizados, documentación, seguimiento, control de proyectos y encuesta de satisfacción", responsable: "Mariel Deluca", estado: "No iniciada", comentarios: "" }
-        ];
+    // Arreglo que almacenará las iniciativas cargadas desde Google Sheets
+    let iniciativas = [];
 
-        // Estados Disponibles
-        const estados = ["No iniciada", "En Desarrollo", "Descartada", "Finalizada"];
+    // Estados disponibles
+    const estados = ["No iniciada", "En Desarrollo", "Descartada", "Finalizada"];
 
-        // Referencias a Elementos del DOM
-        const filtroResponsable = document.getElementById("filtro-responsable");
-        const filtroEstado = document.getElementById("filtro-estado");
-        const tbody = document.getElementById("tabla-cuerpo");
-        const btnAgregar = document.getElementById("btn-agregar");
-        const btnExportar = document.getElementById("btn-exportar");
+    // Referencias a Elementos del DOM
+    const filtroResponsable = document.getElementById("filtro-responsable");
+    const filtroEstado = document.getElementById("filtro-estado");
+    const tbody = document.getElementById("tabla-cuerpo");
+    const btnAgregar = document.getElementById("btn-agregar");
+    const btnExportar = document.getElementById("btn-exportar");
 
-        // Referencias al Modal y sus Elementos
-        const modal = document.getElementById("miModal");
-        const spanCerrar = document.getElementsByClassName("close")[0];
-        const modalTitulo = document.getElementById("modal-titulo");
-        const modalInput = document.getElementById("modal-input");
-        const modalTextarea = document.getElementById("modal-textarea");
-        const btnGuardarCambio = document.getElementById("guardar-cambio");
+    // Referencias al Modal y sus Elementos
+    const modal = document.getElementById("miModal");
+    const spanCerrar = document.getElementsByClassName("close")[0];
+    const modalTitulo = document.getElementById("modal-titulo");
+    const modalInput = document.getElementById("modal-input");
+    const modalTextarea = document.getElementById("modal-textarea");
+    const btnGuardarCambio = document.getElementById("guardar-cambio");
 
-        // Variables para Guardar el Estado Actual del Modal
-        let filaActual = null;
-        let campoActual = null;
+    // Variables para Guardar el Estado Actual del Modal
+    let filaActual = null;
+    let campoActual = null;
 
-        // Función para Cargar los Filtros de Responsables y Estados
-        function cargarFiltros() {
-            // Cargar Filtro de Responsables
-            filtroResponsable.innerHTML = '<option value="Todos">Todos</option>';
-            const responsablesUnicos = [...new Set(iniciativas.map(i => i.responsable))];
-            responsablesUnicos.forEach(responsable => {
-                if (responsable !== "Seleccione") { // Evitar agregar "Seleccione" como responsable
-                    const option = document.createElement("option");
-                    option.value = responsable;
-                    option.textContent = responsable;
-                    filtroResponsable.appendChild(option);
-                }
-            });
+    // ================================
+    //  1) CARGAR DATOS DESDE SHEETS
+    // ================================
+    async function cargarDatosDesdeSheets() {
+      try {
+        const respuesta = await fetch(URL_API);
+        const datos = await respuesta.json(); 
+        // Asumimos que `datos` es un array de objetos [{nombre, responsable, estado, comentarios}, ...]
+        iniciativas = datos;
 
-            // Cargar Filtro de Estados
-            filtroEstado.innerHTML = '<option value="Todos">Todos</option>';
-            estados.forEach(estado => {
-                const option = document.createElement("option");
-                option.value = estado;
-                option.textContent = estado;
-                filtroEstado.appendChild(option);
-            });
-        }
+        // Renderizamos tabla y filtros
+        cargarFiltros();
+        renderTabla();
 
-        // Función para Renderizar la Tabla de Iniciativas
-        function renderTabla() {
-            tbody.innerHTML = "";
-            const filtroResp = filtroResponsable.value;
-            const filtroEst = filtroEstado.value;
+      } catch (error) {
+        console.error("Error al cargar datos de Google Sheets:", error);
+      }
+    }
 
-            iniciativas.forEach((iniciativa, index) => {
-                // Verificar si la iniciativa cumple con los filtros seleccionados
-                if ((filtroResp === "Todos" || filtroResp === iniciativa.responsable) &&
-                    (filtroEst === "Todos" || filtroEst === iniciativa.estado)) {
-                        const tr = document.createElement("tr");
-                        
-                        // Asignar clase según el estado para aplicar color de fondo
-                        switch (iniciativa.estado) {
-                            case "Finalizada":
-                                tr.classList.add("finalizada");
-                                break;
-                            case "En Desarrollo":
-                                tr.classList.add("en-desarrollo");
-                                break;
-                            case "No iniciada":
-                                tr.classList.add("no-iniciada");
-                                break;
-                            case "Descartada":
-                                tr.classList.add("descartada");
-                                break;
-                            default:
-                                break;
-                        }
-
-                        // Celda de Iniciativa - Editable mediante Modal
-                        const iniciativaTd = document.createElement("td");
-                        iniciativaTd.textContent = iniciativa.nombre;
-                        iniciativaTd.style.cursor = "pointer";
-                        iniciativaTd.addEventListener("click", () => abrirModal(index, 'nombre'));
-                        tr.appendChild(iniciativaTd);
-                        
-                        // Celda de Responsable - Editable mediante Select Dropdown
-                        const responsableTd = document.createElement("td");
-                        const selectResponsable = document.createElement("select");
-                        const responsablesUnicos = [...new Set(iniciativas.map(i => i.responsable))];
-                        responsablesUnicos.forEach(responsable => {
-                            if (responsable !== "Seleccione") { // Evitar agregar "Seleccione" como responsable
-                                const option = document.createElement("option");
-                                option.value = responsable;
-                                option.textContent = responsable;
-                                if (responsable === iniciativa.responsable) {
-                                    option.selected = true;
-                                }
-                                selectResponsable.appendChild(option);
-                            }
-                        });
-                        // Agregar opción para agregar un nuevo Responsable
-                        const optionNuevo = document.createElement("option");
-                        optionNuevo.value = "Nuevo";
-                        optionNuevo.textContent = "Añadir Nuevo";
-                        selectResponsable.appendChild(optionNuevo);
-
-                        // Manejar el cambio en el select de Responsable
-                        selectResponsable.addEventListener("change", () => {
-                            if (selectResponsable.value === "Nuevo") {
-                                // Abrir modal para añadir un nuevo Responsable
-                                abrirModal(index, 'responsable');
-                            } else {
-                                // Actualizar el Responsable de la iniciativa
-                                iniciativas[index].responsable = selectResponsable.value;
-                                guardarDatos();
-                            }
-                        });
-
-                        responsableTd.appendChild(selectResponsable);
-                        tr.appendChild(responsableTd);
-                        
-                        // Celda de Estado - Editable mediante Select Dropdown
-                        const estadoTd = document.createElement("td");
-                        const selectEstado = document.createElement("select");
-                        estados.forEach(estado => {
-                            const option = document.createElement("option");
-                            option.value = estado;
-                            option.textContent = estado;
-                            if (estado === iniciativa.estado) {
-                                option.selected = true;
-                            }
-                            selectEstado.appendChild(option);
-                        });
-                        selectEstado.addEventListener("change", () => {
-                            iniciativas[index].estado = selectEstado.value;
-                            guardarDatos();
-                        });
-                        estadoTd.appendChild(selectEstado);
-                        tr.appendChild(estadoTd);
-                        
-                        // Celda de Comentarios - Editable mediante Modal
-                        const comentarioTd = document.createElement("td");
-                        comentarioTd.textContent = iniciativa.comentarios || "Añadir comentario";
-                        comentarioTd.style.cursor = "pointer";
-                        comentarioTd.addEventListener("click", () => abrirModal(index, 'comentarios'));
-                        tr.appendChild(comentarioTd);
-                        
-                        tbody.appendChild(tr);
-                }
-            });
-        }
-
-        // Event Listener para Agregar Nueva Iniciativa
-        btnAgregar.addEventListener("click", () => {
-            const nuevaIniciativa = {
-                nombre: "Nueva Iniciativa",
-                responsable: "Seleccione",
-                estado: "No iniciada",
-                comentarios: ""
-            };
-            iniciativas.push(nuevaIniciativa);
-            guardarDatos();
-            renderTabla();
-            cargarFiltros();
-            // Abrir el modal para editar el responsable de la nueva iniciativa
-            abrirModal(iniciativas.length - 1, 'responsable');
+    // ================================
+    //  2) GUARDAR (AÑADIR) EN SHEETS
+    // ================================
+    async function guardarEnSheets(iniciativaObj) {
+      try {
+        // POST con los datos de la iniciativa
+        const respuesta = await fetch(URL_API, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(iniciativaObj)
         });
+        const resultado = await respuesta.json();
+        console.log("Respuesta de Sheets:", resultado);
 
-        // Event Listener para Exportar a Excel con Colores de Filas y Sin Acentos
-        btnExportar.addEventListener("click", () => {
-            // Crear una nueva tabla HTML temporal con estilos inline
-            let tablaHTML = `
-                <table border="1">
-                    <thead>
-                        <tr style="background-color: #002244; color: #ffffff; font-weight: bold;">
-                            <th>Iniciativas Aprobadas</th>
-                            <th>Responsables</th>
-                            <th>Estado de la Iniciativa</th>
-                            <th>Comentarios</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-            `;
+        // Al terminar de guardar, volvemos a recargar los datos
+        await cargarDatosDesdeSheets();
+      } catch (error) {
+        console.error("Error al guardar en Google Sheets:", error);
+      }
+    }
 
-            const filtroResp = filtroResponsable.value;
-            const filtroEst = filtroEstado.value;
+    // ================================
+    //  FILTROS
+    // ================================
+    function cargarFiltros() {
+      // Limpiar contenido actual
+      filtroResponsable.innerHTML = '<option value="Todos">Todos</option>';
+      filtroEstado.innerHTML = '<option value="Todos">Todos</option>';
 
-            iniciativas.forEach(iniciativa => {
-                if ((filtroResp === "Todos" || filtroResp === iniciativa.responsable) &&
-                    (filtroEst === "Todos" || filtroEst === iniciativa.estado)) {
-                        let colorFondo = "";
-                        switch (iniciativa.estado) {
-                            case "Finalizada":
-                                colorFondo = "#d1e7dd"; // Verde azulado claro
-                                break;
-                            case "En Desarrollo":
-                                colorFondo = "#fff3cd"; // Amarillo claro
-                                break;
-                            case "No iniciada":
-                                colorFondo = "#f8d7da"; // Rojo claro
-                                break;
-                            case "Descartada":
-                                colorFondo = "#d1ecf1"; // Celeste claro
-                                break;
-                            default:
-                                colorFondo = "#ffffff"; // Blanco
-                        }
-
-                        // Aplicar la función removeAccents a cada campo
-                        const nombreSinAcentos = removeAccents(iniciativa.nombre);
-                        const responsableSinAcentos = removeAccents(iniciativa.responsable);
-                        const estadoSinAcentos = removeAccents(iniciativa.estado);
-                        const comentariosSinAcentos = removeAccents(iniciativa.comentarios);
-
-                        tablaHTML += `
-                            <tr style="background-color: ${colorFondo};">
-                                <td>${nombreSinAcentos}</td>
-                                <td>${responsableSinAcentos}</td>
-                                <td>${estadoSinAcentos}</td>
-                                <td>${comentariosSinAcentos}</td>
-                            </tr>
-                        `;
-                }
-            });
-
-            tablaHTML += `
-                    </tbody>
-                </table>
-            `;
-
-            // Crear un Blob con el contenido HTML
-            const blob = new Blob([tablaHTML], { type: "application/vnd.ms-excel" });
-            const url = URL.createObjectURL(blob);
-            const a = document.createElement("a");
-            a.href = url;
-            a.download = "Iniciativas_Aprobadas_2024.xls";
-            a.click();
-            URL.revokeObjectURL(url);
-        });
-
-        // Función para Guardar Datos en LocalStorage y Actualizar Filtros y Tabla
-        function guardarDatos() {
-            localStorage.setItem("iniciativas", JSON.stringify(iniciativas));
-            cargarFiltros();
-            renderTabla();
+      // Agregamos responsables únicos
+      const responsablesUnicos = [...new Set(iniciativas.map(i => i.responsable))];
+      responsablesUnicos.forEach(resp => {
+        if (resp && resp !== "Seleccione") {
+          const option = document.createElement("option");
+          option.value = resp;
+          option.textContent = resp;
+          filtroResponsable.appendChild(option);
         }
+      });
 
-        // Función para Cargar Datos desde LocalStorage
-        function cargarDatos() {
-            const datosGuardados = localStorage.getItem("iniciativas");
-            if (datosGuardados) {
-                iniciativas = JSON.parse(datosGuardados);
+      // Agregamos estados
+      estados.forEach(est => {
+        const option = document.createElement("option");
+        option.value = est;
+        option.textContent = est;
+        filtroEstado.appendChild(option);
+      });
+    }
+
+    // ================================
+    //  RENDERIZAR TABLA
+    // ================================
+    function renderTabla() {
+      tbody.innerHTML = "";
+      const filtroResp = filtroResponsable.value;
+      const filtroEst = filtroEstado.value;
+
+      iniciativas.forEach((iniciativa, index) => {
+        // Filtrar
+        if (
+          (filtroResp === "Todos" || filtroResp === iniciativa.responsable) &&
+          (filtroEst === "Todos" || filtroEst === iniciativa.estado)
+        ) {
+          const tr = document.createElement("tr");
+
+          // Clase para color de fondo según estado
+          switch (iniciativa.estado) {
+            case "Finalizada":
+              tr.classList.add("finalizada");
+              break;
+            case "En Desarrollo":
+              tr.classList.add("en-desarrollo");
+              break;
+            case "No iniciada":
+              tr.classList.add("no-iniciada");
+              break;
+            case "Descartada":
+              tr.classList.add("descartada");
+              break;
+            default:
+              break;
+          }
+
+          // Celda de Iniciativa (nombre)
+          const tdNombre = document.createElement("td");
+          tdNombre.textContent = iniciativa.nombre;
+          tdNombre.style.cursor = "pointer";
+          tdNombre.addEventListener("click", () => abrirModal(index, 'nombre'));
+          tr.appendChild(tdNombre);
+
+          // Celda de Responsable (select)
+          const tdResponsable = document.createElement("td");
+          const selectResponsable = document.createElement("select");
+
+          // Lista de responsables (para dropdown)
+          const respUnicos = [...new Set(iniciativas.map(i => i.responsable))];
+          respUnicos.forEach(r => {
+            if (r !== "Seleccione") {
+              const option = document.createElement("option");
+              option.value = r;
+              option.textContent = r;
+              if (r === iniciativa.responsable) {
+                option.selected = true;
+              }
+              selectResponsable.appendChild(option);
             }
-        }
+          });
+          // Opción “Añadir Nuevo”
+          const optionNuevo = document.createElement("option");
+          optionNuevo.value = "Nuevo";
+          optionNuevo.textContent = "Añadir Nuevo";
+          selectResponsable.appendChild(optionNuevo);
 
-        // Función para Abrir el Modal y Determinar el Campo a Editar
-        function abrirModal(index, campo) {
-            filaActual = index;
-            campoActual = campo;
-            const campoTexto = campo === 'nombre' ? 'Iniciativa' : (campo === 'comentarios' ? 'Comentarios' : 'Responsable');
-            modalTitulo.textContent = `Editar ${campoTexto}`;
-            if (campo === 'nombre' || campo === 'responsable') {
-                // Mostrar el input de texto para 'nombre' o 'responsable'
-                modalInput.value = campo === 'nombre' ? iniciativas[index].nombre : (iniciativas[index].responsable !== "Seleccione" ? iniciativas[index].responsable : "");
-                modalInput.style.display = 'block';
-                modalTextarea.style.display = 'none';
-                // Si estamos editando 'responsable' y es "Seleccione", limpiar el valor
-                if (campo === 'responsable' && iniciativas[index].responsable === "Seleccione") {
-                    modalInput.value = "";
-                }
+          selectResponsable.addEventListener("change", () => {
+            if (selectResponsable.value === "Nuevo") {
+              // Abrir modal para añadir un nuevo responsable
+              abrirModal(index, 'responsable');
             } else {
-                // Mostrar el textarea para 'comentarios'
-                modalTextarea.value = iniciativas[index].comentarios;
-                modalTextarea.style.display = 'block';
-                modalInput.style.display = 'none';
+              // Actualizar localmente
+              iniciativas[index].responsable = selectResponsable.value;
+              // Como la hoja hace “append” con doPost, enviamos la fila actualizada:
+              guardarEnSheets(iniciativas[index]);
             }
-            modal.style.display = "block";
-        }
+          });
 
-        // Event Listener para Cerrar el Modal al Hacer Clic en la 'X'
-        spanCerrar.onclick = function() {
-            modal.style.display = "none";
-        }
+          tdResponsable.appendChild(selectResponsable);
+          tr.appendChild(tdResponsable);
 
-        // Event Listener para Cerrar el Modal al Hacer Clic Fuera del Contenido del Modal
-        window.onclick = function(event) {
-            if (event.target == modal) {
-                modal.style.display = "none";
+          // Celda de Estado
+          const tdEstado = document.createElement("td");
+          const selectEstado = document.createElement("select");
+          estados.forEach(est => {
+            const option = document.createElement("option");
+            option.value = est;
+            option.textContent = est;
+            if (est === iniciativa.estado) {
+              option.selected = true;
             }
+            selectEstado.appendChild(option);
+          });
+          selectEstado.addEventListener("change", () => {
+            iniciativas[index].estado = selectEstado.value;
+            guardarEnSheets(iniciativas[index]);
+          });
+          tdEstado.appendChild(selectEstado);
+          tr.appendChild(tdEstado);
+
+          // Celda de Comentarios
+          const tdComentario = document.createElement("td");
+          tdComentario.textContent = iniciativa.comentarios || "Añadir comentario";
+          tdComentario.style.cursor = "pointer";
+          tdComentario.addEventListener("click", () => abrirModal(index, 'comentarios'));
+          tr.appendChild(tdComentario);
+
+          tbody.appendChild(tr);
         }
+      });
+    }
 
-        // Event Listener para Guardar Cambios desde el Modal
-        btnGuardarCambio.addEventListener("click", () => {
-            if (campoActual === 'nombre') {
-                iniciativas[filaActual].nombre = modalInput.value.trim() || "Sin Nombre";
-            } else if (campoActual === 'comentarios') {
-                iniciativas[filaActual].comentarios = modalTextarea.value.trim();
-            } else if (campoActual === 'responsable') {
-                const nuevoResponsable = modalInput.value.trim();
-                if (nuevoResponsable !== "") {
-                    iniciativas[filaActual].responsable = nuevoResponsable;
-                } else {
-                    alert("El campo 'Responsable' no puede estar vacío.");
-                    return;
-                }
-            }
-            guardarDatos();
-            modal.style.display = "none";
-        });
+    // ================================
+    //  MODAL (Abrir/Cerrar/Guardar)
+    // ================================
+    function abrirModal(index, campo) {
+      filaActual = index;
+      campoActual = campo;
+      const campoTexto = 
+        campo === 'nombre' 
+          ? 'Iniciativa' 
+          : (campo === 'responsable' ? 'Responsable' : 'Comentarios');
+      modalTitulo.textContent = `Editar ${campoTexto}`;
 
-        // Función de Inicialización de la Página
-        function init() {
-            cargarDatos();
-            cargarFiltros();
-            renderTabla();
-
-            // Escuchar cambios en filtros para re-renderizar la tabla
-            filtroResponsable.addEventListener("change", renderTabla);
-            filtroEstado.addEventListener("change", renderTabla);
+      if (campo === 'nombre' || campo === 'responsable') {
+        // Mostramos el input de texto
+        modalInput.value = 
+          (campo === 'nombre') 
+            ? iniciativas[index].nombre 
+            : (iniciativas[index].responsable !== "Seleccione" ? iniciativas[index].responsable : "");
+        modalInput.style.display = 'block';
+        modalTextarea.style.display = 'none';
+        
+        // Si es responsable y está “Seleccione”, lo limpiamos
+        if (campo === 'responsable' && iniciativas[index].responsable === "Seleccione") {
+          modalInput.value = "";
         }
+      } else {
+        // Mostramos el textarea para comentarios
+        modalTextarea.value = iniciativas[index].comentarios || "";
+        modalTextarea.style.display = 'block';
+        modalInput.style.display = 'none';
+      }
+      modal.style.display = "block";
+    }
 
-        // Ejecutar la Inicialización al Cargar la Página
-        init();
-    </script>
+    spanCerrar.onclick = function() {
+      modal.style.display = "none";
+    };
+    window.onclick = function(event) {
+      if (event.target == modal) {
+        modal.style.display = "none";
+      }
+    };
+
+    btnGuardarCambio.addEventListener("click", () => {
+      if (campoActual === 'nombre') {
+        iniciativas[filaActual].nombre = modalInput.value.trim() || "Sin Nombre";
+      } else if (campoActual === 'comentarios') {
+        iniciativas[filaActual].comentarios = modalTextarea.value.trim();
+      } else if (campoActual === 'responsable') {
+        const nuevoResp = modalInput.value.trim();
+        if (nuevoResp !== "") {
+          iniciativas[filaActual].responsable = nuevoResp;
+        } else {
+          alert("El campo 'Responsable' no puede estar vacío.");
+          return;
+        }
+      }
+
+      // Guardamos la iniciativa actual en la hoja (añade una nueva fila, según tu doPost)
+      guardarEnSheets(iniciativas[filaActual]);
+
+      modal.style.display = "none";
+    });
+
+    // ================================
+    //  AGREGAR INICIATIVA
+    // ================================
+    btnAgregar.addEventListener("click", () => {
+      const nueva = {
+        nombre: "Nueva Iniciativa",
+        responsable: "Seleccione",
+        estado: "No iniciada",
+        comentarios: ""
+      };
+      iniciativas.push(nueva);
+      // Guardamos en Sheets (esto creará una nueva fila)
+      guardarEnSheets(nueva);
+    });
+
+    // ================================
+    //  EXPORTAR A EXCEL
+    // ================================
+    // Función para eliminar acentos (como en el original)
+    function removeAccents(str) {
+      return str.normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+    }
+
+    btnExportar.addEventListener("click", () => {
+      let tablaHTML = `
+        <table border="1">
+          <thead>
+            <tr style="background-color: #002244; color: #ffffff; font-weight: bold;">
+              <th>Iniciativas Aprobadas</th>
+              <th>Responsables</th>
+              <th>Estado de la Iniciativa</th>
+              <th>Comentarios</th>
+            </tr>
+          </thead>
+          <tbody>
+      `;
+
+      const filtroResp = filtroResponsable.value;
+      const filtroEst = filtroEstado.value;
+
+      iniciativas.forEach(inic => {
+        if (
+          (filtroResp === "Todos" || inic.responsable === filtroResp) &&
+          (filtroEst === "Todos" || inic.estado === filtroEst)
+        ) {
+          let colorFondo = "#ffffff";
+          switch (inic.estado) {
+            case "Finalizada":
+              colorFondo = "#d1e7dd";
+              break;
+            case "En Desarrollo":
+              colorFondo = "#fff3cd";
+              break;
+            case "No iniciada":
+              colorFondo = "#f8d7da";
+              break;
+            case "Descartada":
+              colorFondo = "#d1ecf1";
+              break;
+          }
+
+          const nombreSinAcentos = removeAccents(inic.nombre);
+          const respSinAcentos = removeAccents(inic.responsable);
+          const estadoSinAcentos = removeAccents(inic.estado);
+          const comentSinAcentos = removeAccents(inic.comentarios || "");
+
+          tablaHTML += `
+            <tr style="background-color: ${colorFondo};">
+              <td>${nombreSinAcentos}</td>
+              <td>${respSinAcentos}</td>
+              <td>${estadoSinAcentos}</td>
+              <td>${comentSinAcentos}</td>
+            </tr>
+          `;
+        }
+      });
+
+      tablaHTML += `
+          </tbody>
+        </table>
+      `;
+
+      const blob = new Blob([tablaHTML], { type: "application/vnd.ms-excel" });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = "Iniciativas_Aprobadas_2024.xls";
+      a.click();
+      URL.revokeObjectURL(url);
+    });
+
+    // ================================
+    //  INICIALIZACIÓN
+    // ================================
+    async function init() {
+      // Al cargar la página, leemos la data desde Sheets
+      await cargarDatosDesdeSheets();
+
+      // Cuando cambian los filtros, renderizamos la tabla
+      filtroResponsable.addEventListener("change", renderTabla);
+      filtroEstado.addEventListener("change", renderTabla);
+    }
+
+    // Ejecutamos init
+    init();
+  </script>
 </body>
 </html>
