@@ -272,7 +272,7 @@
       max-width: 600px;
       margin: 30px auto;
     }
-    /* Se aumenta el tamaño del gráfico en un 50% (de 250px a 375px) */
+    /* Aumentamos el tamaño del gráfico de 250px a 375px */
     #chartDonut {
       max-width: 375px;
       max-height: 375px;
@@ -313,7 +313,7 @@
       transform: scale(1.05);
     }
   </style>
-  <!-- Incluir Chart.js -->
+  <!-- Incluir Chart.js desde CDN -->
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body>
@@ -673,7 +673,7 @@
       URL.revokeObjectURL(url);
     });
     
-    // Obtener color del encabezado
+    // Obtener color de encabezado
     function getHeaderColor() {
       const header = getComputedStyle(document.documentElement).getPropertyValue('--color-header').trim();
       return header || "#002244";
@@ -935,13 +935,13 @@
       detailContainer.style.display = "block";
     }
     
-    // Botón "Volver" en detalle
+    // Botón "Volver" en la vista de detalle
     btnVolver.addEventListener("click", () => {
       detailContainer.style.display = "none";
       mainView.style.display = "block";
     });
     
-    // Botón "Graficos": Mostrar/ocultar gráfico y generar gráfico
+    // Botón "Graficos": Mostrar/ocultar área de gráfico y generar gráfico
     btnGraficos.addEventListener("click", () => {
       if (chartContainer.style.display === "none" || chartContainer.style.display === "") {
         generarGrafico();
