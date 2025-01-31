@@ -290,10 +290,13 @@
     </style>
 </head>
 <body>
+    <!-- Encabezado con Título Centrado y Logo a la Derecha -->
     <div class="encabezado">
         <h1>Iniciativas Aprobadas 2024</h1>
         <img src="blatorh.png" alt="Logo de Blatorh">
     </div>
+
+    <!-- Sección de Filtros con Fondo Azul Oscuro y Texto Blanco -->
     <div class="filtros">
         <div>
             <label for="filtro-responsable">Filtrar por Responsable:</label>
@@ -310,6 +313,7 @@
         </div>
     </div>
     
+    <!-- Tabla de Iniciativas -->
     <table>
         <thead>
             <tr>
@@ -320,14 +324,17 @@
             </tr>
         </thead>
         <tbody id="tabla-cuerpo">
+            <!-- Filas de la tabla serán generadas dinámicamente -->
         </tbody>
     </table>
 
+    <!-- Botones para Descargar a Excel y Agregar Nueva Iniciativa -->
     <div class="btn-agregar btn-exportar">
         <button id="btn-exportar">📥 Descargar a Excel</button>
         <button id="btn-agregar">+ Agregar Iniciativa</button>
     </div>
 
+    <!-- Modal para Editar Iniciativas y Comentarios -->
     <div id="miModal" class="modal">
         <div class="modal-content">
             <span class="close">&times;</span>
@@ -341,11 +348,21 @@
     <script>
         // Datos Iniciales de las Iniciativas
         let iniciativas = [
-            { nombre: "Generar un set de reportes en nuestra base de datos", responsable: "Anthony Rivero", estado: "No iniciada", comentarios: "" },
-            { nombre: "Implementación de herramienta de monitoreo", responsable: "Anthony Rivero", estado: "En Desarrollo", comentarios: "" },
-            { nombre: "Desarrollo de funcionalidades avanzadas", responsable: "Ariel Di Prinzio", estado: "Finalizada", comentarios: "" },
-            { nombre: "Implementación de Payroll Control Center", responsable: "Pablo Bascoy", estado: "No iniciada", comentarios: "" },
-            { nombre: "Elección de herramienta y propuesta de procesos", responsable: "Pablo Bascoy", estado: "Descartada", comentarios: "" }
+            { nombre: "Generar un set de reportes en nuestra base de SF Demo con la herramienta de People Analityc para luego ser ofrecido a los distintos clientes", responsable: "Anthony Rivero", estado: "No iniciada", comentarios: "" },
+            { nombre: "Luego de la implementación de la herramienta en el cliente Roemmers analizar si es viable y recomendable ofrecerlo a otros clientes.", responsable: "Anthony Rivero", estado: "No iniciada", comentarios: "" },
+            { nombre: "Desarrollar nuevas funcionalidades avanzadas de gestión de datos maestros en la plataforma SAP SuccessFactors. Ejemplo desarrollos en BTP, clonador de legajos en EC,Carga masiva de datos en EC.", responsable: "Ariel Di Prinzio", estado: "No iniciada", comentarios: "" },
+            { nombre: "Generar para poder implementar Payroll Control Center en distintos clientes teniendo como base el RDS ofrecido por SAP y viendo el funcionamiento en la implementación actual en Ford", responsable: "Pablo Bascoy", estado: "No iniciada", comentarios: "" },
+            { nombre: "Elección de la herramienta, propuesta de procesos e implementación para mejorar las oportunidades, relación con los clientes y mejorar las ventas", responsable: "Pablo Bascoy", estado: "No iniciada", comentarios: "" },
+            { nombre: "Generar blogs, artículos, infografías y videos de calidad para la página web de BlatoRH. Los usuarios deberán registrarse para acceder a este contenido, lo que nos permitirá generar nuevos contactos.", responsable: "Francisco Torres", estado: "No iniciada", comentarios: "" },
+            { nombre: "Aumentar la interacción y visibilidad de BlatoRH en redes sociales clave como LinkedIn, Instagram y Facebook. Compartir proyectos finalizados con éxito para dar a conocer nuestros servicios.", responsable: "Francisco Torres", estado: "No iniciada", comentarios: "" },
+            { nombre: "Desarrollo de un brochure corporativo que presente de manera detallada y atractiva los servicios ofrecidos por nuestra firma.", responsable: "Leonardo Blau", estado: "No iniciada", comentarios: "" },
+            { nombre: "Desarrollo de documentos con preguntas clave por módulo, para poder comprender mejor las necesidades del cliente y armar propuestas a la medida.", responsable: "Gabriela Gimenez", estado: "No iniciada", comentarios: "" },
+            { nombre: "Creación de un documento que resuma la funcionalidad estándar de los módulos, para poder presentarlo rápidamente a clientes y prospectos.", responsable: "Gabriela Gimenez", estado: "No iniciada", comentarios: "" },
+            { nombre: "Comunicación del programa de incentivos para nuestro equipo, con el objetivo de motivar y recompensar la generación de nuevas oportunidades con nuevos clientes que generen ingresos.", responsable: "Leonardo Blau", estado: "No iniciada", comentarios: "" },
+            { nombre: "Propuesta de un programa de capacitación, tanto para desarrollar las capacidades actuales como para cubrir brechas de conocimiento en el equipo.", responsable: "Mariel Deluca", estado: "No iniciada", comentarios: "" },
+            { nombre: "Relevar desarrollos existentes en las distintas instancias de los clientes con el objetivo de poder hacer un paquete vendible a otros clientes, como también nuevos desarrollos que tengan dicho fin.", responsable: "Manuel Cervantes", estado: "No iniciada", comentarios: "" },
+            { nombre: "Crear un espacio compartido donde todo el equipo pueda aportar y registrar distintas ideas e iniciativas que detecten, para posteriormente analizarlas y evaluar su viabilidad de presentarlas a los clientes.", responsable: "Irene Mendez", estado: "No iniciada", comentarios: "" },
+            { nombre: "Implementación de una oficina de gestión de proyectos con procesos estandarizados, documentación, seguimiento, control de proyectos y encuesta de satisfacción", responsable: "Mariel Deluca", estado: "No iniciada", comentarios: "" }
         ];
 
         // Estados Disponibles
@@ -510,6 +527,8 @@
             guardarDatos();
             renderTabla();
             cargarFiltros();
+            // Abrir el modal para editar el responsable de la nueva iniciativa
+            abrirModal(iniciativas.length - 1, 'responsable');
         });
 
         // Event Listener para Exportar a Excel con Colores de Filas
@@ -578,7 +597,7 @@
             URL.revokeObjectURL(url);
         });
 
-        // Función para Guardar Datos en LocalStorage y Actualizar Filtros
+        // Función para Guardar Datos en LocalStorage y Actualizar Filtros y Tabla
         function guardarDatos() {
             localStorage.setItem("iniciativas", JSON.stringify(iniciativas));
             cargarFiltros();
@@ -601,9 +620,13 @@
             modalTitulo.textContent = `Editar ${campoTexto}`;
             if (campo === 'nombre' || campo === 'responsable') {
                 // Mostrar el input de texto para 'nombre' o 'responsable'
-                modalInput.value = campo === 'nombre' ? iniciativas[index].nombre : iniciativas[index].responsable;
+                modalInput.value = campo === 'nombre' ? iniciativas[index].nombre : (iniciativas[index].responsable !== "Seleccione" ? iniciativas[index].responsable : "");
                 modalInput.style.display = 'block';
                 modalTextarea.style.display = 'none';
+                // Si estamos editando 'responsable' y es "Seleccione", limpiar el valor
+                if (campo === 'responsable' && iniciativas[index].responsable === "Seleccione") {
+                    modalInput.value = "";
+                }
             } else {
                 // Mostrar el textarea para 'comentarios'
                 modalTextarea.value = iniciativas[index].comentarios;
@@ -635,9 +658,12 @@
                 const nuevoResponsable = modalInput.value.trim();
                 if (nuevoResponsable !== "") {
                     iniciativas[filaActual].responsable = nuevoResponsable;
-                    guardarDatos();
+                } else {
+                    alert("El campo 'Responsable' no puede estar vacío.");
+                    return;
                 }
             }
+            guardarDatos();
             modal.style.display = "none";
         });
 
