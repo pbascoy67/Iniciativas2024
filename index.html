@@ -272,9 +272,10 @@
       max-width: 600px;
       margin: 30px auto;
     }
+    /* Se aumenta el tamaño del gráfico en un 50% (de 250px a 375px) */
     #chartDonut {
-      max-width: 250px;
-      max-height: 250px;
+      max-width: 375px;
+      max-height: 375px;
     }
     #chartLegend {
       font-size: 16px;
@@ -318,12 +319,10 @@
 <body>
   <!-- Vista Principal -->
   <div id="mainView">
-    <!-- Encabezado -->
     <div class="encabezado">
       <h1>Iniciativas Aprobadas 2024</h1>
       <img src="blatorh.png" alt="Logo de Blatorh">
     </div>
-    <!-- Filtros -->
     <div class="filtros">
       <div>
         <label for="filtro-responsable">Filtrar por Responsable:</label>
@@ -338,7 +337,6 @@
         </select>
       </div>
     </div>
-    <!-- Tabla de Iniciativas -->
     <table>
       <thead>
         <tr>
@@ -352,21 +350,19 @@
         <!-- Se generarán dinámicamente -->
       </tbody>
     </table>
-    <!-- Botones -->
     <div class="btn-agregar btn-exportar">
       <button id="btn-exportar">📥 Descargar a Excel</button>
       <button id="btn-agregar">+ Agregar Iniciativa</button>
       <button id="btn-gestionar-estados">⚙️ Gestionar Estados</button>
       <button id="btn-graficos">Graficos</button>
     </div>
-    <!-- Área de gráfico y leyenda -->
     <div id="chartContainer" style="display: none;">
       <canvas id="chartDonut"></canvas>
       <div id="chartLegend"></div>
     </div>
   </div>
   
-  <!-- Vista de Detalle (filtrado por estado) -->
+  <!-- Vista de Detalle -->
   <div id="detailContainer">
     <h2 id="detailTitle"></h2>
     <table>
@@ -545,7 +541,6 @@
           const estadoObj = estados.find(e => e.nombre === iniciativa.estado);
           const colorFondo = estadoObj ? estadoObj.color : "#ffffff";
     
-          // Celda Iniciativa
           const iniciativaTd = document.createElement("td");
           iniciativaTd.textContent = removeAccents(iniciativa.nombre);
           iniciativaTd.style.cursor = "pointer";
@@ -553,7 +548,6 @@
           iniciativaTd.style.backgroundColor = colorFondo;
           tr.appendChild(iniciativaTd);
     
-          // Celda Responsable
           const responsableTd = document.createElement("td");
           const selectResponsable = document.createElement("select");
           const responsablesUnicos = [...new Set(iniciativas.map(i => i.responsable))];
@@ -582,7 +576,6 @@
           responsableTd.style.backgroundColor = colorFondo;
           tr.appendChild(responsableTd);
     
-          // Celda Estado
           const estadoTd = document.createElement("td");
           const selectEstado = document.createElement("select");
           estados.forEach(estado => {
@@ -608,7 +601,6 @@
           estadoTd.style.backgroundColor = colorFondo;
           tr.appendChild(estadoTd);
     
-          // Celda Comentarios
           const comentarioTd = document.createElement("td");
           comentarioTd.textContent = removeAccents(iniciativa.comentarios || "Añadir comentario");
           comentarioTd.style.cursor = "pointer";
@@ -681,7 +673,7 @@
       URL.revokeObjectURL(url);
     });
     
-    // Obtener color de encabezado
+    // Obtener color del encabezado
     function getHeaderColor() {
       const header = getComputedStyle(document.documentElement).getPropertyValue('--color-header').trim();
       return header || "#002244";
@@ -692,14 +684,14 @@
       abrirModalEstados();
     });
     
-    // Guardar datos
+    // Guardar datos en LocalStorage y actualizar
     function guardarDatos() {
       localStorage.setItem("iniciativas", JSON.stringify(iniciativas));
       cargarFiltros();
       renderTabla();
     }
     
-    // Cargar datos
+    // Cargar datos desde LocalStorage
     function cargarDatos() {
       const datosGuardados = localStorage.getItem("iniciativas");
       if (datosGuardados) {
@@ -895,7 +887,6 @@
           }
         }
       });
-      // Actualizar leyenda a la derecha
       let legendHtml = "";
       labels.forEach((label, index) => {
         const count = data[index];
@@ -908,7 +899,7 @@
       chartLegend.innerHTML = legendHtml;
     }
     
-    // Al hacer doble clic en el gráfico, mostrar detalles filtrados por estado
+    // Doble clic en el gráfico para ver detalle por estado
     document.getElementById("chartDonut").addEventListener("dblclick", function(e) {
       const elements = donutChart.getElementsAtEventForMode(e, 'nearest', { intersect: true }, false);
       if (elements.length) {
@@ -918,16 +909,12 @@
       }
     });
     
-    // Función para mostrar detalle de iniciativas filtradas por un estado
+    // Mostrar detalle de iniciativas filtradas por estado
     function mostrarDetalleEstado(estado) {
-      // Filtrar iniciativas
       const filtradas = iniciativas.filter(i => i.estado === estado);
-      // Ocultar vista principal y gráfico
-      document.getElementById("mainView").style.display = "none";
+      mainView.style.display = "none";
       chartContainer.style.display = "none";
-      // Actualizar título de detalle
       detailTitle.textContent = `Iniciativas en estado: ${estado}`;
-      // Generar tabla de detalle
       detailTableBody.innerHTML = "";
       filtradas.forEach(iniciativa => {
         const tr = document.createElement("tr");
@@ -945,17 +932,16 @@
         tr.appendChild(tdComentarios);
         detailTableBody.appendChild(tr);
       });
-      // Mostrar vista de detalle
       detailContainer.style.display = "block";
     }
     
-    // Botón "Volver" en la vista de detalle
+    // Botón "Volver" en detalle
     btnVolver.addEventListener("click", () => {
       detailContainer.style.display = "none";
       mainView.style.display = "block";
     });
     
-    // Botón "Graficos": Mostrar/ocultar área de gráfico y generar gráfico
+    // Botón "Graficos": Mostrar/ocultar gráfico y generar gráfico
     btnGraficos.addEventListener("click", () => {
       if (chartContainer.style.display === "none" || chartContainer.style.display === "") {
         generarGrafico();
