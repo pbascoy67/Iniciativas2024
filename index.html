@@ -469,6 +469,11 @@
         let campoActual = null;
         let colorSeleccionado = null;
 
+        // Función para Eliminar Acentos de una Cadena
+        function removeAccents(str) {
+            return str.normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+        }
+
         // Función para Cargar los Filtros de Responsables y Estados
         function cargarFiltros() {
             // Cargar Filtro de Responsables
@@ -507,15 +512,14 @@
                         
                         // Obtener el color del estado
                         const estadoObj = estados.find(e => e.nombre === iniciativa.estado);
-                        if (estadoObj) {
-                            tr.style.backgroundColor = estadoObj.color;
-                        }
+                        const colorFondo = estadoObj ? estadoObj.color : "#ffffff";
 
                         // Celda de Iniciativa - Editable mediante Modal
                         const iniciativaTd = document.createElement("td");
-                        iniciativaTd.textContent = iniciativa.nombre;
+                        iniciativaTd.textContent = removeAccents(iniciativa.nombre);
                         iniciativaTd.style.cursor = "pointer";
                         iniciativaTd.addEventListener("click", () => abrirModal(index, 'nombre'));
+                        iniciativaTd.style.backgroundColor = colorFondo;
                         tr.appendChild(iniciativaTd);
                         
                         // Celda de Responsable - Editable mediante Select Dropdown
@@ -526,7 +530,7 @@
                             if (responsable !== "Seleccione") { // Evitar agregar "Seleccione" como responsable
                                 const option = document.createElement("option");
                                 option.value = responsable;
-                                option.textContent = responsable;
+                                option.textContent = removeAccents(responsable);
                                 if (responsable === iniciativa.responsable) {
                                     option.selected = true;
                                 }
@@ -552,6 +556,7 @@
                         });
 
                         responsableTd.appendChild(selectResponsable);
+                        responsableTd.style.backgroundColor = colorFondo;
                         tr.appendChild(responsableTd);
                         
                         // Celda de Estado - Editable mediante Select Dropdown
@@ -585,13 +590,15 @@
                         });
 
                         estadoTd.appendChild(selectEstado);
+                        estadoTd.style.backgroundColor = colorFondo;
                         tr.appendChild(estadoTd);
                         
                         // Celda de Comentarios - Editable mediante Modal
                         const comentarioTd = document.createElement("td");
-                        comentarioTd.textContent = iniciativa.comentarios || "Añadir comentario";
+                        comentarioTd.textContent = removeAccents(iniciativa.comentarios || "Añadir comentario");
                         comentarioTd.style.cursor = "pointer";
                         comentarioTd.addEventListener("click", () => abrirModal(index, 'comentarios'));
+                        comentarioTd.style.backgroundColor = colorFondo; // Asignar el mismo color que las otras columnas
                         tr.appendChild(comentarioTd);
                         
                         tbody.appendChild(tr);
@@ -615,13 +622,13 @@
             abrirModal(iniciativas.length - 1, 'responsable');
         });
 
-        // Event Listener para Exportar a Excel con Colores de Filas
+        // Event Listener para Exportar a Excel con Colores de Columnas
         btnExportar.addEventListener("click", () => {
             // Crear una nueva tabla HTML temporal con estilos inline
             let tablaHTML = `
                 <table border="1">
                     <thead>
-                        <tr style="background-color: #002244; color: #ffffff; font-weight: bold;">
+                        <tr style="background-color: ${removeAccents(getHeaderColor())}; color: #ffffff; font-weight: bold;">
                             <th>Iniciativas Aprobadas</th>
                             <th>Responsables</th>
                             <th>Estado de la Iniciativa</th>
@@ -644,11 +651,11 @@
                         }
 
                         tablaHTML += `
-                            <tr style="background-color: ${colorFondo};">
-                                <td>${iniciativa.nombre}</td>
-                                <td>${iniciativa.responsable}</td>
-                                <td>${iniciativa.estado}</td>
-                                <td>${iniciativa.comentarios}</td>
+                            <tr>
+                                <td style="background-color: ${colorFondo};">${removeAccents(iniciativa.nombre)}</td>
+                                <td style="background-color: ${colorFondo};">${removeAccents(iniciativa.responsable)}</td>
+                                <td style="background-color: ${colorFondo};">${removeAccents(iniciativa.estado)}</td>
+                                <td style="background-color: ${colorFondo};">${removeAccents(iniciativa.comentarios)}</td>
                             </tr>
                         `;
                 }
@@ -660,7 +667,7 @@
             `;
 
             // Crear un Blob con el contenido HTML
-            const blob = new Blob([tablaHTML], { type: "application/vnd.ms-excel" });
+            const blob = new Blob([tablaHTML], { type: "application/vnd.ms-excel;charset=utf-8" });
             const url = URL.createObjectURL(blob);
             const a = document.createElement("a");
             a.href = url;
@@ -668,6 +675,12 @@
             a.click();
             URL.revokeObjectURL(url);
         });
+
+        // Obtener el color del encabezado para la exportación
+        function getHeaderColor() {
+            const header = getComputedStyle(document.documentElement).getPropertyValue('--color-header').trim();
+            return header || "#002244"; // Valor por defecto si no está definido
+        }
 
         // Event Listener para Gestionar Estados
         btnGestionarEstados.addEventListener("click", () => {
