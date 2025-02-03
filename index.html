@@ -24,6 +24,40 @@
       padding: 20px;
       color: var(--color-texto-general);
     }
+    /* Estilo para el contenedor de botones laterales (ubicado en la esquina superior izquierda) */
+    #sideButtons {
+      position: fixed;
+      top: 20px;
+      left: 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      z-index: 1000;
+    }
+    /* Botones redondos y modernos para subir/bajar datos */
+    #sideButtons button {
+      background-color: var(--color-boton);
+      color: var(--color-boton-texto);
+      border: none;
+      width: 45px;
+      height: 45px;
+      border-radius: 50%;
+      cursor: pointer;
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+      font-size: 1.6em;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: background-color 0.3s, transform 0.2s;
+    }
+    #sideButtons button:hover {
+      background-color: #002244;
+      transform: scale(1.1);
+    }
+    /* Se agrega un margen extra al contenedor principal para que los botones no lo tapen */
+    #mainView {
+      margin-left: 80px;
+    }
     .encabezado {
       display: flex;
       align-items: center;
@@ -349,6 +383,13 @@
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body>
+  <!-- Botones laterales para exportar/importar datos del Local Storage -->
+  <div id="sideButtons">
+    <button id="btnDownload" title="Descargar datos del Local Storage">&#x2193;</button>
+    <button id="btnUpload" title="Subir datos al Local Storage">&#x2191;</button>
+    <input type="file" id="fileInput" accept=".json" style="display: none;">
+  </div>
+
   <!-- Vista Principal -->
   <div id="mainView">
     <div class="encabezado">
@@ -988,6 +1029,59 @@
     document.getElementById("btnCerrarGrafico").addEventListener("click", () => {
       chartContainer.style.display = "none";
     });
+    
+    // *******************
+    // NUEVA FUNCIONALIDAD:
+    // Botones laterales para exportar/importar los datos del Local Storage en formato JSON
+    const btnDownload = document.getElementById("btnDownload");
+    const btnUpload = document.getElementById("btnUpload");
+    const fileInput = document.getElementById("fileInput");
+    
+    btnDownload.addEventListener("click", () => {
+      const data = {
+        iniciativas: iniciativas,
+        estados: estados
+      };
+      const dataStr = JSON.stringify(data, null, 2);
+      const blob = new Blob([dataStr], {type: "application/json"});
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = "datos_localStorage.json";
+      a.click();
+      URL.revokeObjectURL(url);
+    });
+    
+    btnUpload.addEventListener("click", () => {
+      fileInput.click();
+    });
+    
+    fileInput.addEventListener("change", (event) => {
+      const file = event.target.files[0];
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        try {
+          const importedData = JSON.parse(e.target.result);
+          if (importedData.iniciativas && importedData.estados) {
+            iniciativas = importedData.iniciativas;
+            estados = importedData.estados;
+            localStorage.setItem("iniciativas", JSON.stringify(iniciativas));
+            localStorage.setItem("estados", JSON.stringify(estados));
+            cargarFiltros();
+            renderTabla();
+            actualizarListaEstadosExistentes();
+            alert("Datos importados correctamente.");
+          } else {
+            alert("El archivo no tiene el formato correcto.");
+          }
+        } catch (err) {
+          alert("Error al leer el archivo: " + err.message);
+        }
+      };
+      reader.readAsText(file);
+    });
+    // *******************
     
     // Inicialización
     function init() {
