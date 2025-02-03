@@ -24,7 +24,7 @@
       padding: 20px;
       color: var(--color-texto-general);
     }
-    /* Botones laterales (exportar/importar) ubicados en la esquina superior izquierda */
+    /* Estilo para el contenedor de botones laterales (ubicado en la esquina superior izquierda) */
     #sideButtons {
       position: fixed;
       top: 20px;
@@ -34,6 +34,7 @@
       gap: 10px;
       z-index: 1000;
     }
+    /* Botones redondos y modernos para subir/bajar datos */
     #sideButtons button {
       background-color: var(--color-boton);
       color: var(--color-boton-texto);
@@ -53,7 +54,7 @@
       background-color: #002244;
       transform: scale(1.1);
     }
-    /* Agregamos margen para que el contenido principal no quede tapado por los botones laterales */
+    /* Se agrega un margen extra al contenedor principal para que los botones no lo tapen */
     #mainView {
       margin-left: 80px;
     }
@@ -309,14 +310,6 @@
       overflow: auto;
       padding: 20px;
     }
-    /* Encabezado del modal de gráficos (Total de Iniciativas) */
-    #chartTotal {
-      font-size: 1.2em;
-      font-weight: bold;
-      margin-bottom: 10px;
-      text-align: center;
-      color: var(--color-texto-general);
-    }
     /* Contenedor interno del overlay: gráfico y leyenda lado a lado */
     #chartContent {
       display: flex;
@@ -324,7 +317,7 @@
       align-items: center;
       gap: 20px;
       width: 100%;
-      height: calc(100% - 60px);
+      height: 100%;
     }
     /* Tamaño del gráfico: 375px (50% más grande que 250px) */
     #chartDonut {
@@ -335,11 +328,11 @@
       font-size: 16px;
       color: var(--color-texto-general);
     }
-    /* Botón "Cerrar" para el overlay de gráfico, reubicado a la esquina superior izquierda */
+    /* Botón "Cerrar" para el overlay de gráfico */
     #btnCerrarGrafico {
       position: absolute;
       top: 20px;
-      left: 20px;
+      right: 20px;
       background-color: var(--color-boton);
       color: var(--color-boton-texto);
       border: none;
@@ -434,7 +427,7 @@
       <button id="btn-exportar">📥 Descargar a Excel</button>
       <button id="btn-agregar">+ Agregar Iniciativa</button>
       <button id="btn-gestionar-estados">⚙️ Gestionar Estados</button>
-      <button id="btn-graficos">Gráficos</button>
+      <button id="btn-graficos">Graficos</button>
     </div>
   </div>
   
@@ -459,10 +452,7 @@
   
   <!-- Overlay de Gráfico (Pantalla completa) -->
   <div id="chartContainer">
-    <!-- Botón "Cerrar" reubicado a la izquierda -->
     <button id="btnCerrarGrafico">Cerrar</button>
-    <!-- Encabezado que muestra el total de iniciativas -->
-    <div id="chartTotal"></div>
     <div id="chartContent">
       <canvas id="chartDonut"></canvas>
       <div id="chartLegend"></div>
@@ -515,7 +505,7 @@
     let iniciativas = [
       { nombre: "Generar un set de reportes en nuestra base de SF Demo con la herramienta de People Analityc para luego ser ofrecido a los distintos clientes", responsable: "Anthony Rivero", estado: "No iniciada", comentarios: "" },
       { nombre: "Luego de la implementación de la herramienta en el cliente Roemmers analizar si es viable y recomendable ofrecerlo a otros clientes.", responsable: "Anthony Rivero", estado: "No iniciada", comentarios: "" },
-      { nombre: "Desarrollar nuevas funcionalidades avanzadas de gestión de datos maestros en la plataforma SAP SuccessFactors. Ejemplo desarrollos en BTP, clonador de legajos en EC, Carga masiva de datos en EC.", responsable: "Ariel Di Prinzio", estado: "No iniciada", comentarios: "" },
+      { nombre: "Desarrollar nuevas funcionalidades avanzadas de gestión de datos maestros en la plataforma SAP SuccessFactors. Ejemplo desarrollos en BTP, clonador de legajos en EC,Carga masiva de datos en EC.", responsable: "Ariel Di Prinzio", estado: "No iniciada", comentarios: "" },
       { nombre: "Generar para poder implementar Payroll Control Center en distintos clientes teniendo como base el RDS ofrecido por SAP y viendo el funcionamiento en la implementación actual en Ford", responsable: "Pablo Bascoy", estado: "No iniciada", comentarios: "" },
       { nombre: "Elección de la herramienta, propuesta de procesos e implementación para mejorar las oportunidades, relación con los clientes y mejorar las ventas", responsable: "Pablo Bascoy", estado: "No iniciada", comentarios: "" },
       { nombre: "Generar blogs, artículos, infografías y videos de calidad para la página web de BlatoRH. Los usuarios deberán registrarse para acceder a este contenido, lo que nos permitirá generar nuevos contactos.", responsable: "Francisco Torres", estado: "No iniciada", comentarios: "" },
@@ -584,7 +574,6 @@
     // Contenedor para gráfico en overlay (pantalla completa)
     const chartContainer = document.getElementById("chartContainer");
     const chartLegend = document.getElementById("chartLegend");
-    const chartTotal = document.getElementById("chartTotal");
     let donutChart;
     
     // Variables para modal
@@ -938,9 +927,6 @@
     // Función para generar gráfico donut
     function generarGrafico() {
       const totalIniciativas = iniciativas.length;
-      // Actualizamos el encabezado del modal con el total de iniciativas
-      chartTotal.textContent = "Total de Iniciativas: " + totalIniciativas;
-      
       const estadosCount = {};
       iniciativas.forEach(iniciativa => {
         estadosCount[iniciativa.estado] = (estadosCount[iniciativa.estado] || 0) + 1;
@@ -1033,7 +1019,7 @@
       mainView.style.display = "block";
     });
     
-    // Botón "Gráficos": Mostrar overlay del gráfico en pantalla completa
+    // Botón "Graficos": Mostrar overlay del gráfico en pantalla completa
     btnGraficos.addEventListener("click", () => {
       generarGrafico();
       chartContainer.style.display = "block";
@@ -1045,7 +1031,8 @@
     });
     
     // *******************
-    // Funcionalidad de exportar/importar datos del Local Storage en formato JSON
+    // NUEVA FUNCIONALIDAD:
+    // Botones laterales para exportar/importar los datos del Local Storage en formato JSON
     const btnDownload = document.getElementById("btnDownload");
     const btnUpload = document.getElementById("btnUpload");
     const fileInput = document.getElementById("fileInput");
