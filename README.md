@@ -22,6 +22,21 @@ La primera vez crea `.env` con secretos aleatorios (git lo ignora), construye la
 - Detener: `docker compose down` (los datos quedan en `./data`). Registros: `docker compose logs -f app`.
 - Nota: los datos de demostración y los nombres de etapa por defecto se crean en español solo en instalaciones nuevas; una base creada antes conserva sus nombres.
 
+## Inicio rápido sin Docker
+
+Si no tienes Docker, necesitas **Node.js 20+** y **PostgreSQL 14+** (con `psql`) instalados:
+
+- macOS: `brew install node postgresql@16 && brew services start postgresql@16`
+- Ubuntu/Debian/WSL: `sudo apt install nodejs npm postgresql && sudo service postgresql start`
+
+Luego:
+
+```bash
+./start-local.sh
+```
+
+Crea `.env` con secretos aleatorios, crea el usuario y la base de datos en tu PostgreSQL, instala dependencias, aplica migraciones, carga la demostración, compila y arranca en `http://localhost:3000` (cambia el puerto con `PORT=3100 ./start-local.sh`). Es seguro volver a ejecutarlo. Si no puede crear la base automáticamente, te imprime las dos líneas de SQL que debes ejecutar como administrador de PostgreSQL. Las copias de seguridad quedan en `./data/backups` (`npm run backup`; requiere `pg_dump`, que viene con PostgreSQL) y la restauración es `npm run restore -- <archivo> --yes`.
+
 ## Qué hace
 
 | Área | Detalle |
