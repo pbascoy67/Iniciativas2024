@@ -9,3 +9,4 @@ playwright-report/
 *.dump
 *.tsbuildinfo
 next-env.d.ts
+entrega/
