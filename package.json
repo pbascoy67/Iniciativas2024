@@ -1,0 +1,39 @@
+{
+  "name": "personal-crm",
+  "version": "1.0.0",
+  "private": true,
+  "description": "A local-first personal CRM: contacts, companies, pipeline, timeline and a daily agenda.",
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "typecheck": "tsc --noEmit",
+    "db:generate": "drizzle-kit generate",
+    "db:migrate": "tsx scripts/migrate.ts",
+    "db:seed": "tsx scripts/seed.ts",
+    "db:reset-test": "tsx scripts/reset-test-db.ts",
+    "backup": "tsx scripts/backup.ts",
+    "restore": "tsx scripts/restore.ts",
+    "test": "vitest run",
+    "test:e2e": "playwright test"
+  },
+  "dependencies": {
+    "drizzle-orm": "^0.45.4",
+    "next": "^15.5.28",
+    "postgres": "^4.0.0",
+    "react": "^19.1.1",
+    "react-dom": "^19.1.1",
+    "server-only": "^0.0.1",
+    "zod": "^3.25.76"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.64.1",
+    "@types/node": "^22.20.5",
+    "@types/react": "19.1",
+    "@types/react-dom": "19.1",
+    "drizzle-kit": "^0.31.11",
+    "tsx": "^4.23.15",
+    "typescript": "^5.9.3",
+    "vitest": "^5.0.5"
+  }
+}

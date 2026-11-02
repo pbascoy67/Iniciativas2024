@@ -1,0 +1,58 @@
+# Everything runs locally; the only data store is ./data (bind-mounted below).
+name: personal-crm
+
+x-app-env: &app-env
+  DATABASE_URL: postgres://${POSTGRES_USER:-crm}:${POSTGRES_PASSWORD:?Run ./start.sh (it creates .env with random secrets)}@db:5432/${POSTGRES_DB:-crm}
+  TZ: ${APP_TIMEZONE:-UTC}
+  BACKUP_DIR: /backups
+
+services:
+  db:
+    image: postgres:16-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-crm}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?Run ./start.sh (it creates .env with random secrets)}
+      POSTGRES_DB: ${POSTGRES_DB:-crm}
+    volumes:
+      - ./data/postgres:/var/lib/postgresql/data
+    ports:
+      - "127.0.0.1:${DB_PORT:-5432}:5432" # localhost only; used by `npm run dev` and `npm run test:e2e`
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-crm} -d ${POSTGRES_DB:-crm}"]
+      interval: 3s
+      timeout: 3s
+      retries: 20
+
+  app:
+    build: .
+    restart: unless-stopped
+    env_file: .env
+    environment: *app-env
+    user: "${HOST_UID:-0}:${HOST_GID:-0}"
+    depends_on:
+      db:
+        condition: service_healthy
+    ports:
+      - "127.0.0.1:${APP_PORT:-3000}:3000"
+    volumes:
+      - ./data/backups:/backups
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://127.0.0.1:3000/api/health"]
+      interval: 5s
+      timeout: 3s
+      retries: 30
+      start_period: 10s
+
+  backup:
+    build: .
+    restart: unless-stopped
+    env_file: .env
+    environment: *app-env
+    user: "${HOST_UID:-0}:${HOST_GID:-0}"
+    depends_on:
+      app:
+        condition: service_healthy
+    volumes:
+      - ./data/backups:/backups
+    command: ["sh", "scripts/backup-loop.sh"]
