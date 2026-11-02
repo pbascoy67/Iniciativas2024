@@ -35,32 +35,32 @@ export function FilterBar({
             </span>
           </label>
         ))}
-        <button type="submit" className="primary">Apply</button>
-        {active.length > 0 && <Link prefetch={false} className="btn" href={path}>Clear</Link>}
+        <button type="submit" className="primary">Aplicar</button>
+        {active.length > 0 && <Link prefetch={false} className="btn" href={path}>Limpiar</Link>}
       </form>
       {(views.length > 0 || active.length > 0) && (
         <div style={{ marginTop: ".75rem" }}>
-          <div className="chips" aria-label="Saved views">
+          <div className="chips" aria-label="Vistas guardadas">
             {views.map((v) => (
               <Link prefetch={false} key={v.id} href={`${path}?view=${v.id}`} className={`chip${v.id === activeViewId ? " on" : ""}`}>
-                {v.name}{v.shared ? " (shared)" : ""}
+                {v.name}{v.shared ? " (compartida)" : ""}
               </Link>
             ))}
           </div>
           {activeView && (activeView.ownerId === user.id || user.role === "admin") && (
-            <ActionForm action={deleteView} inline submit="Delete this view" submitClass="sm danger" confirm={`Delete the saved view "${activeView.name}"?`}>
+            <ActionForm action={deleteView} inline submit="Eliminar esta vista" submitClass="sm danger" confirm={`¿Eliminar la vista guardada "${activeView.name}"?`}>
               <input type="hidden" name="id" value={activeView.id} />
               <input type="hidden" name="entity" value={entity} />
             </ActionForm>
           )}
           {active.length > 0 && !activeViewId && (
             <details>
-              <summary className="small">Save these filters as a view</summary>
-              <ActionForm action={saveView} submit="Save view" className="row">
+              <summary className="small">Guardar estos filtros como una vista</summary>
+              <ActionForm action={saveView} submit="Guardar vista" className="row">
                 <input type="hidden" name="entity" value={entity} />
                 {active.map(([k, v]) => <input key={k} type="hidden" name={`f_${k}`} value={v} />)}
-                <Field label="View name" name="name" required maxLength={60} />
-                {user.role === "admin" && <label className="small"><input type="checkbox" name="shared" /> Share with everyone</label>}
+                <Field label="Nombre de la vista" name="name" required maxLength={60} />
+                {user.role === "admin" && <label className="small"><input type="checkbox" name="shared" /> Compartir con todos</label>}
               </ActionForm>
             </details>
           )}

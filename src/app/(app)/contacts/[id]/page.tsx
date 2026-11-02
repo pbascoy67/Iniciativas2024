@@ -28,13 +28,13 @@ export default async function ContactPage({ params }: { params: Promise<{ id: st
   const canWrite = can(user.role, "write");
   return (
     <>
-      <BackLink href="/contacts">Contacts</BackLink>
+      <BackLink href="/contacts">Contactos</BackLink>
       <div className="page-head">
         <div><h1>{name}</h1><p className="muted">{[c.jobTitle, row.company].filter(Boolean).join(" at ")}</p></div>
         <div className="row">
-          {canWrite && <Link prefetch={false} className="btn" href={`/contacts/${id}/edit`}>Edit</Link>}
-          {canWrite && <Link prefetch={false} className="btn" href={`/opportunities/new?contact=${id}`}>New opportunity</Link>}
-          {can(user.role, "delete") && <ActionForm action={deleteContact} inline submit="Delete" submitClass="danger" confirm="Delete this contact and its notes, tasks and interactions? This is recorded in the activity log.">
+          {canWrite && <Link prefetch={false} className="btn" href={`/contacts/${id}/edit`}>Editar</Link>}
+          {canWrite && <Link prefetch={false} className="btn" href={`/opportunities/new?contact=${id}`}>Nueva oportunidad</Link>}
+          {can(user.role, "delete") && <ActionForm action={deleteContact} inline submit="Eliminar" submitClass="danger" confirm="¿Eliminar este contacto y sus notas, tareas e interacciones? Queda registrado en el registro de actividad.">
             <input type="hidden" name="id" value={id} /></ActionForm>}
         </div>
       </div>
@@ -42,15 +42,15 @@ export default async function ContactPage({ params }: { params: Promise<{ id: st
         <div>
           <div className="card">
             <dl className="kv">
-              <dt>Email</dt><dd>{c.email ? <a href={`mailto:${c.email}`}>{c.email}</a> : "—"}</dd>
-              <dt>Phone</dt><dd>{c.phone ?? "—"}</dd>
-              <dt>Company</dt><dd>{c.companyId ? <Link prefetch={false} href={`/companies/${c.companyId}`}>{row.company}</Link> : "—"}</dd>
-              <dt>Owner</dt><dd>{row.owner ?? "Unassigned"}</dd>
+              <dt>Correo</dt><dd>{c.email ? <a href={`mailto:${c.email}`}>{c.email}</a> : "—"}</dd>
+              <dt>Teléfono</dt><dd>{c.phone ?? "—"}</dd>
+              <dt>Empresa</dt><dd>{c.companyId ? <Link prefetch={false} href={`/companies/${c.companyId}`}>{row.company}</Link> : "—"}</dd>
+              <dt>Propietario</dt><dd>{row.owner ?? "Sin asignar"}</dd>
             </dl>
           </div>
           <div className="card">
-            <h2>Opportunities</h2>
-            {opps.length === 0 ? <p className="muted small">None yet.</p> : opps.map((o) => (
+            <h2>Oportunidades</h2>
+            {opps.length === 0 ? <p className="muted small">Ninguna todavía.</p> : opps.map((o) => (
               <div key={o.id} className="task"><div className="grow"><Link prefetch={false} href={`/opportunities/${o.id}`}>{o.name}</Link><div className="small muted">{o.stage} · {formatMoney(o.valueCents)}</div></div></div>
             ))}
           </div>

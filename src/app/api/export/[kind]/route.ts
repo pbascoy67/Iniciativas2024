@@ -53,11 +53,11 @@ async function rowsFor(kind: Exclude<Kind, "all">): Promise<{ columns: string[];
 
 export async function GET(req: Request, { params }: { params: Promise<{ kind: string }> }) {
   const { kind } = await params;
-  if (!KINDS.includes(kind as Kind)) return Response.json({ error: "Unknown export type." }, { status: 404 });
+  if (!KINDS.includes(kind as Kind)) return Response.json({ error: "Tipo de exportación desconocido." }, { status: 404 });
   const perm: Permission = kind === "activity" ? "viewActivity" : "export";
   const user = await userOrResponse(perm);
   if (user instanceof Response) return user;
-  if (!sameOrigin(req)) return Response.json({ error: "Cross-origin request blocked." }, { status: 403 });
+  if (!sameOrigin(req)) return Response.json({ error: "Solicitud de otro origen bloqueada." }, { status: 403 });
   try {
     const stamp = todayISO();
     let body: string, type: string, name: string;
@@ -77,10 +77,10 @@ export async function GET(req: Request, { params }: { params: Promise<{ kind: st
       type = "text/csv; charset=utf-8";
       name = safeFilename(`crm-${kind}-${stamp}.csv`);
     }
-    await logActivity(db, user, { action: "export", entity: "export", summary: `Exported ${kind}`, details: { bytes: body.length } });
+    await logActivity(db, user, { action: "export", entity: "export", summary: `Exportó ${kind}`, details: { bytes: body.length } });
     return new Response(body, { headers: { "Content-Type": type, "Content-Disposition": `attachment; filename="${name}"`, "Cache-Control": "no-store" } });
   } catch (e) {
     console.error("[export]", e);
-    return Response.json({ error: "Export failed. The database may be unavailable; try again." }, { status: 503 });
+    return Response.json({ error: "Falló la exportación. Puede que la base de datos no esté disponible; inténtalo de nuevo." }, { status: 503 });
   }
 }

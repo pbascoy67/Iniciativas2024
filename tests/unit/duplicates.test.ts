@@ -21,7 +21,7 @@ describe("duplicate detection", () => {
     ]);
     const sorted = groups.map((g) => g.ids.sort()).sort();
     expect(sorted).toEqual([["1", "2", "3"], ["4", "5"]]);
-    expect(groups.find((g) => g.ids.includes("1"))!.reasons).toEqual(expect.arrayContaining(["same email", "same phone"]));
+    expect(groups.find((g) => g.ids.includes("1"))!.reasons).toEqual(expect.arrayContaining(["mismo correo", "mismo teléfono"]));
   });
 
   it("ignores single-word names and short phone numbers", () => {

@@ -1,12 +1,12 @@
 #!/usr/bin/env bash
-# One command to run the CRM locally:  ./start.sh
-# First run: creates .env with random secrets, builds the image, starts Postgres + the app,
-# applies migrations and seeds the demo workspace. Later runs just start/update it.
+# Un solo comando para ejecutar el CRM en local:  ./start.sh
+# Primera vez: crea .env con secretos aleatorios, construye la imagen, inicia Postgres y la app,
+# aplica las migraciones y carga el espacio de demostración. Las siguientes veces solo inicia/actualiza.
 set -euo pipefail
 cd "$(dirname "$0")"
 
-command -v docker >/dev/null 2>&1 || { echo "Docker is required: https://docs.docker.com/get-docker/" >&2; exit 1; }
-docker compose version >/dev/null 2>&1 || { echo "Docker Compose v2 is required (the 'docker compose' command)." >&2; exit 1; }
+command -v docker >/dev/null 2>&1 || { echo "Se requiere Docker: https://docs.docker.com/get-docker/" >&2; exit 1; }
+docker compose version >/dev/null 2>&1 || { echo "Se requiere Docker Compose v2 (el comando 'docker compose')." >&2; exit 1; }
 
 if [ ! -f .env ]; then
   gen() { head -c 18 /dev/urandom | od -An -tx1 | tr -d ' \n'; }
@@ -20,9 +20,9 @@ if [ ! -f .env ]; then
       *)                      echo "$line" ;;
     esac
   done < .env.example > .env
-  { echo; echo "# File ownership for ./data inside containers (set by start.sh)"; echo "HOST_UID=$(id -u)"; echo "HOST_GID=$(id -g)"; } >> .env
+  { echo; echo "# Propietario de los archivos de ./data dentro de los contenedores (lo define start.sh)"; echo "HOST_UID=$(id -u)"; echo "HOST_GID=$(id -g)"; } >> .env
   chmod 600 .env
-  echo "Created .env with freshly generated secrets (it is git-ignored)."
+  echo "Se creó .env con secretos recién generados (git lo ignora)."
 fi
 
 mkdir -p data/postgres data/backups
@@ -30,10 +30,10 @@ docker compose up --build --wait
 
 set -a; . ./.env; set +a
 echo
-echo "Personal CRM is running:  http://localhost:${APP_PORT:-3000}"
-echo "  Admin login: ${ADMIN_EMAIL}  /  ${ADMIN_PASSWORD}   (stored in .env)"
+echo "CRM Personal en marcha:  http://localhost:${APP_PORT:-3000}"
+echo "  Administrador: ${ADMIN_EMAIL}  /  ${ADMIN_PASSWORD}   (guardado en .env)"
 if [ "${SEED_DEMO:-true}" = "true" ]; then
-  echo "  Demo users:  alex@example.com (member), sam@example.com (viewer) / ${DEMO_USERS_PASSWORD}"
+  echo "  Usuarios demo: alex@example.com (miembro), sam@example.com (solo lectura) / ${DEMO_USERS_PASSWORD}"
 fi
-echo "  Your data:   ./data/postgres   Backups: ./data/backups"
-echo "  Stop: docker compose down      Logs: docker compose logs -f app"
+echo "  Tus datos:   ./data/postgres   Copias: ./data/backups"
+echo "  Detener: docker compose down      Registros: docker compose logs -f app"

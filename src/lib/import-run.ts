@@ -17,8 +17,8 @@ export interface ImportResult {
 
 export function parseImportText(text: string): { headers: string[]; rows: string[][] } {
   const all = parseCsv(text);
-  if (all.length < 2) throw new Error("The file needs a header row and at least one data row.");
-  if (all.length - 1 > MAX_IMPORT_ROWS) throw new Error(`Too many rows (${all.length - 1}). Split the file into chunks of ${MAX_IMPORT_ROWS} or fewer.`);
+  if (all.length < 2) throw new Error("El archivo necesita una fila de encabezados y al menos una fila de datos.");
+  if (all.length - 1 > MAX_IMPORT_ROWS) throw new Error(`Demasiadas filas (${all.length - 1}). Divide el archivo en partes de ${MAX_IMPORT_ROWS} filas o menos.`);
   return { headers: all[0].map((h) => h.trim()), rows: all.slice(1) };
 }
 
@@ -88,7 +88,7 @@ export async function runImport(user: SessionUser, entity: ImportEntity, text: s
     }
     await logActivity(tx, user, {
       action: "import.csv", entity: "import",
-      summary: `Imported ${entity}: ${result.created} created, ${result.updated} updated, ${result.skipped} skipped, ${result.errorCount} rejected`,
+      summary: `Importó ${entity === "contacts" ? "contactos" : "empresas"}: ${result.created} creados, ${result.updated} actualizados, ${result.skipped} omitidos, ${result.errorCount} rechazados`,
       details: { entity, onDuplicate, ...result },
     });
   });

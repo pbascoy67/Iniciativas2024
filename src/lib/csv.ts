@@ -36,7 +36,7 @@ export function parseCsv(input: string, delimiter?: string): string[][] {
       field = "";
     } else field += c;
   }
-  if (quoted) throw new Error("Unterminated quoted field: the file looks truncated or malformed.");
+  if (quoted) throw new Error("Campo entrecomillado sin cerrar: el archivo parece truncado o mal formado.");
   if (field !== "" || row.length > 0) {
     row.push(field);
     rows.push(row);

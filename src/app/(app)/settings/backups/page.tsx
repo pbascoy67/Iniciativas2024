@@ -7,22 +7,22 @@ import { backupDir, listBackups } from "@/lib/backup";
 import { formatDateTime } from "@/lib/dates";
 import { can } from "@/lib/permissions";
 
-export const metadata = { title: "Backups · Personal CRM" };
+export const metadata = { title: "Copias de seguridad · CRM Personal" };
 
 export default async function BackupsSettings() {
   const user = await requireUser();
-  if (!can(user.role, "backup")) return <Forbidden what="backups" />;
+  if (!can(user.role, "backup")) return <Forbidden what="las copias de seguridad" />;
   const backups = listBackups();
   return (
     <>
-      <BackLink href="/settings">Settings</BackLink>
-      <h1>Backups</h1>
-      <p className="muted">Stored on this machine in <code>{backupDir()}</code>. The docker compose <code>backup</code> service also creates one automatically on a schedule. To restore, use the command in the README (it replaces the current data, so it is intentionally not a button).</p>
-      <div className="card"><ActionForm action={makeBackup} submit="Create backup now" /></div>
+      <BackLink href="/settings">Configuración</BackLink>
+      <h1>Copias de seguridad</h1>
+      <p className="muted">Guardadas en esta máquina en <code>{backupDir()}</code>. El servicio <code>backup</code> de docker compose también crea una automáticamente según un calendario. Para restaurar, usa el comando del README (reemplaza los datos actuales, por eso no es un botón).</p>
+      <div className="card"><ActionForm action={makeBackup} submit="Crear copia ahora" /></div>
       <div className="card tablewrap">
-        {backups.length === 0 ? <Empty title="No backups yet">Create one now, or wait for the scheduled backup.</Empty> : (
-          <table><thead><tr><th>File</th><th>Created</th><th>Size</th><th /></tr></thead><tbody>
-            {backups.map((b) => <tr key={b.file}><td><code>{b.file}</code></td><td>{formatDateTime(b.modified)}</td><td>{(b.bytes / 1024).toFixed(0)} KB</td><td><a className="btn sm" href={`/api/backups/${b.file}`} download>Download</a></td></tr>)}
+        {backups.length === 0 ? <Empty title="Aún no hay copias de seguridad">Crea una ahora o espera a la copia programada.</Empty> : (
+          <table><thead><tr><th>Archivo</th><th>Creada</th><th>Tamaño</th><th /></tr></thead><tbody>
+            {backups.map((b) => <tr key={b.file}><td><code>{b.file}</code></td><td>{formatDateTime(b.modified)}</td><td>{(b.bytes / 1024).toFixed(0)} KB</td><td><a className="btn sm" href={`/api/backups/${b.file}`} download>Descargar</a></td></tr>)}
           </tbody></table>
         )}
       </div>

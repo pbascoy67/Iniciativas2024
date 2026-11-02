@@ -11,11 +11,11 @@ export async function GET(_req: Request, { params }: { params: Promise<{ file: s
   const user = await userOrResponse("backup");
   if (user instanceof Response) return user;
   const { file } = await params;
-  if (!isBackupFilename(file)) return Response.json({ error: "Unknown backup." }, { status: 404 });
+  if (!isBackupFilename(file)) return Response.json({ error: "Copia de seguridad desconocida." }, { status: 404 });
   const full = path.join(backupDir(), file);
   const stream = createReadStream(full);
   return new Promise<Response>((resolve) => {
-    stream.once("error", () => resolve(Response.json({ error: "Backup file not found." }, { status: 404 })));
+    stream.once("error", () => resolve(Response.json({ error: "No se encontró el archivo de copia de seguridad." }, { status: 404 })));
     stream.once("open", () =>
       resolve(new Response(Readable.toWeb(stream) as ReadableStream, { headers: { "Content-Type": "application/octet-stream", "Content-Disposition": `attachment; filename="${file}"`, "Cache-Control": "no-store" } })),
     );

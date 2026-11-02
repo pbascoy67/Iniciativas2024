@@ -23,14 +23,14 @@ describe("import mapping and transformation", () => {
     const { records, errors } = transformContacts([["A", "not-an-email"], ["", ""], ["B", "b@x.io; c@x.io"]], m);
     expect(records.map((r) => r.record.email)).toEqual(["b@x.io"]);
     expect(errors.map((e) => e.row)).toEqual([1, 2]);
-    expect(errors[0].message).toMatch(/Invalid email/);
+    expect(errors[0].message).toMatch(/Correo no válido/);
   });
 
   it("requires a company name for company imports", () => {
     const m = autoMap(["Company", "Website"], "companies");
     const out = transform("companies", [["Acme", "https://acme.test"], ["", "x"]], m);
     expect(out.records).toHaveLength(1);
-    expect(out.errors[0]).toEqual({ row: 2, message: "Company name is required" });
+    expect(out.errors[0]).toEqual({ row: 2, message: "El nombre de la empresa es obligatorio" });
   });
 
   it("splits names", () => {

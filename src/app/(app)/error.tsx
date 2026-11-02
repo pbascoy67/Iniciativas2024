@@ -3,9 +3,9 @@
 export default function ErrorPage({ reset }: { error: Error; reset: () => void }) {
   return (
     <div className="card" role="alert">
-      <h1>Something went wrong</h1>
-      <p className="muted">The page couldn&apos;t load. This usually means the database is still starting or is unreachable. Your data is not affected.</p>
-      <button type="button" className="primary" onClick={reset}>Try again</button>
+      <h1>Algo salió mal</h1>
+      <p className="muted">No se pudo cargar la página. Normalmente significa que la base de datos aún está iniciando o no es accesible. Tus datos no se ven afectados.</p>
+      <button type="button" className="primary" onClick={reset}>Intentar de nuevo</button>
     </div>
   );
 }

@@ -12,6 +12,6 @@ export async function GET(req: Request) {
     return Response.json(await globalSearch(q));
   } catch (e) {
     console.error("[search]", e);
-    return Response.json({ error: "Search is temporarily unavailable." }, { status: 503 });
+    return Response.json({ error: "La búsqueda no está disponible por ahora." }, { status: 503 });
   }
 }

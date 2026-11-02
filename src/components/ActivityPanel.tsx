@@ -1,4 +1,5 @@
 import { addNote, addTask, logInteraction } from "@/app/actions/activities";
+import { TYPE_ES } from "@/lib/i18n";
 import { formatDateTime, tz } from "@/lib/dates";
 import type { TaskRow } from "@/lib/queries";
 import type { TimelineItem } from "@/lib/timeline";
@@ -25,53 +26,53 @@ export function ActivityPanel({
       {canWrite && (
         <div className="card">
           <details open>
-            <summary>Add a note</summary>
-            <ActionForm action={addNote} submit="Add note">
+            <summary>Agregar una nota</summary>
+            <ActionForm action={addNote} submit="Agregar nota">
               <Hidden target={target} />
-              <Field label="Note" name="body" rows={3} required maxLength={10000} />
+              <Field label="Nota" name="body" rows={3} required maxLength={10000} />
             </ActionForm>
           </details>
           <details>
-            <summary>Log an email, meeting or call</summary>
-            <ActionForm action={logInteraction} submit="Log it">
+            <summary>Registrar un correo, reunión o llamada</summary>
+            <ActionForm action={logInteraction} submit="Registrar">
               <Hidden target={target} />
               <div className="row">
-                <Field label="Type" name="type" options={[{ value: "email", label: "Email" }, { value: "meeting", label: "Meeting" }, { value: "call", label: "Call" }]} defaultValue="email" />
-                <Field label="When" name="occurredAt" type="datetime-local" defaultValue={nowLocal()} required />
+                <Field label="Tipo" name="type" options={[{ value: "email", label: "Correo" }, { value: "meeting", label: "Reunión" }, { value: "call", label: "Llamada" }]} defaultValue="email" />
+                <Field label="Cuándo" name="occurredAt" type="datetime-local" defaultValue={nowLocal()} required />
               </div>
-              <Field label="Subject" name="subject" required maxLength={200} />
-              <Field label="Details (paste the email, or meeting notes)" name="body" rows={4} maxLength={10000} />
+              <Field label="Asunto" name="subject" required maxLength={200} />
+              <Field label="Detalles (pega el correo o las notas de la reunión)" name="body" rows={4} maxLength={10000} />
             </ActionForm>
           </details>
           <details>
-            <summary>Add a task / next action</summary>
-            <ActionForm action={addTask} submit="Add task">
+            <summary>Agregar una tarea / próxima acción</summary>
+            <ActionForm action={addTask} submit="Agregar tarea">
               <Hidden target={target} />
-              <Field label="What needs to happen?" name="title" required maxLength={300} />
+              <Field label="¿Qué hay que hacer?" name="title" required maxLength={300} />
               <div className="row">
-                <Field label="Due" name="dueDate" type="date" />
-                <Field label="Owner" name="ownerId" defaultValue={currentUserId} options={users.map((u) => ({ value: u.id, label: u.name }))} />
+                <Field label="Vence" name="dueDate" type="date" />
+                <Field label="Propietario" name="ownerId" defaultValue={currentUserId} options={users.map((u) => ({ value: u.id, label: u.name }))} />
               </div>
             </ActionForm>
           </details>
         </div>
       )}
       <div className="card">
-        <h2>Tasks</h2>
-        {tasks.length === 0 ? <p className="muted small">No tasks yet. Add a next action so this doesn&apos;t go quiet.</p> : tasks.map((t) => <TaskItem key={t.id} t={t} today={today} canWrite={canWrite} canDelete={canDelete} showRelated={false} />)}
+        <h2>Tareas</h2>
+        {tasks.length === 0 ? <p className="muted small">Aún no hay tareas. Agrega una próxima acción para que esto no se enfríe.</p> : tasks.map((t) => <TaskItem key={t.id} t={t} today={today} canWrite={canWrite} canDelete={canDelete} showRelated={false} />)}
       </div>
       <div className="card">
-        <h2>Timeline</h2>
+        <h2>Cronología</h2>
         {timeline.length === 0 ? (
-          <Empty title="Nothing logged yet">Notes, emails, meetings and calls will appear here, newest first.</Empty>
+          <Empty title="Aún no hay nada registrado">Las notas, correos, reuniones y llamadas aparecerán aquí, los más recientes primero.</Empty>
         ) : (
           <ol className="tl">
             {timeline.map((i) => (
               <li key={i.id}>
-                <span className="ic" title={i.kind}>{ICON[i.kind]}</span>
+                <span className="ic" title={i.kind === "note" ? "nota" : i.kind === "task" ? "tarea" : i.kind === "stage" ? "etapa" : TYPE_ES[i.kind]}>{ICON[i.kind]}</span>
                 <div>
-                  <div><b>{i.kind === "note" ? "Note" : i.title}</b>{" "}
-                    <span className="muted small">{i.kind === "email" || i.kind === "meeting" || i.kind === "call" ? `${i.kind} · ` : ""}{formatDateTime(i.at)}{i.author ? ` · ${i.author}` : ""}</span>
+                  <div><b>{i.kind === "note" ? "Nota" : i.title}</b>{" "}
+                    <span className="muted small">{i.kind === "email" || i.kind === "meeting" || i.kind === "call" ? `${TYPE_ES[i.kind as keyof typeof TYPE_ES]} · ` : ""}{formatDateTime(i.at)}{i.author ? ` · ${i.author}` : ""}</span>
                   </div>
                   {i.body && <pre>{i.body}</pre>}
                 </div>

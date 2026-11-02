@@ -106,10 +106,10 @@ export function findContactDuplicates(contacts: DupContact[]): DupGroup[] {
   return group(contacts, (c) => {
     const name = normalizeName(c.firstName, c.lastName);
     return [
-      { reason: "same email", key: normalizeEmail(c.email) },
-      { reason: "same phone", key: normalizePhone(c.phone) },
+      { reason: "mismo correo", key: normalizeEmail(c.email) },
+      { reason: "mismo teléfono", key: normalizePhone(c.phone) },
       // name alone is too weak; require the same company (or both companyless)
-      { reason: "same name and company", key: name.includes(" ") ? `${name}|${c.companyId ?? "none"}` : "" },
+      { reason: "mismo nombre y empresa", key: name.includes(" ") ? `${name}|${c.companyId ?? "none"}` : "" },
     ];
   });
 }
@@ -118,8 +118,8 @@ export function findCompanyDuplicates(companies: DupCompany[]): DupGroup[] {
   return group(companies, (c) => {
     const dom = domainOf(c.domain || c.website);
     return [
-      { reason: "same name", key: normalizeCompanyName(c.name) },
-      { reason: "same domain", key: isFreeMailDomain(dom) ? "" : dom },
+      { reason: "mismo nombre", key: normalizeCompanyName(c.name) },
+      { reason: "mismo dominio", key: isFreeMailDomain(dom) ? "" : dom },
     ];
   });
 }

@@ -205,9 +205,9 @@ export async function dashboard(ownerId: string | null) {
   const needsAttention = openOpps
     .map((o) => {
       const reasons: string[] = [];
-      if (!o.hasOpenTask) reasons.push("No next action scheduled");
+      if (!o.hasOpenTask) reasons.push("Sin próxima acción programada");
       const touched = new Date(o.lastTouch ?? o.createdAt).getTime();
-      if (touched < staleBefore) reasons.push(`No contact in ${Math.floor((Date.now() - touched) / 86400_000)} days`);
+      if (touched < staleBefore) reasons.push(`Sin contacto hace ${Math.floor((Date.now() - touched) / 86400_000)} días`);
       return { ...o, reasons };
     })
     .filter((o) => o.reasons.length);

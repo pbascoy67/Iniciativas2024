@@ -19,16 +19,16 @@ export function addDays(iso: string, days: number): string {
 
 export function formatDate(iso: string | null | undefined): string {
   if (!iso) return "—";
-  return new Date(`${iso.slice(0, 10)}T00:00:00Z`).toLocaleDateString("en-US", { timeZone: "UTC", year: "numeric", month: "short", day: "numeric" });
+  return new Date(`${iso.slice(0, 10)}T00:00:00Z`).toLocaleDateString("es-ES", { timeZone: "UTC", year: "numeric", month: "short", day: "numeric" });
 }
 
 export function formatDateTime(d: Date | string): string {
-  return new Date(d).toLocaleString("en-US", { timeZone: tz(), year: "numeric", month: "short", day: "numeric", hour: "numeric", minute: "2-digit" });
+  return new Date(d).toLocaleString("es-ES", { timeZone: tz(), year: "numeric", month: "short", day: "numeric", hour: "numeric", minute: "2-digit" });
 }
 
 export function formatMoney(cents: number, currency = process.env.CURRENCY || "USD"): string {
   try {
-    return new Intl.NumberFormat("en-US", { style: "currency", currency, maximumFractionDigits: 0 }).format(cents / 100);
+    return new Intl.NumberFormat("es-ES", { style: "currency", currency, maximumFractionDigits: 0 }).format(cents / 100);
   } catch {
     return `${(cents / 100).toFixed(0)} ${currency}`;
   }

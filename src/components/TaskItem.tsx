@@ -11,7 +11,7 @@ export function TaskItem({ t, today, canWrite, canDelete, showRelated = true }: 
   return (
     <div className={`task${done ? " done" : ""}`}>
       {canWrite && (
-        <ActionForm action={toggleTask} inline submit={done ? "Reopen" : "✓ Done"} submitClass="sm" hideMessage>
+        <ActionForm action={toggleTask} inline submit={done ? "Reabrir" : "✓ Hecha"} submitClass="sm" hideMessage>
           <input type="hidden" name="id" value={t.id} />
         </ActionForm>
       )}
@@ -19,12 +19,12 @@ export function TaskItem({ t, today, canWrite, canDelete, showRelated = true }: 
         <div className="t">{t.title}</div>
         <div className="small muted">
           {showRelated && related?.label && <><Link prefetch={false} href={related.href}>{related.label}</Link> · </>}
-          {t.ownerName ?? "Unassigned"}
+          {t.ownerName ?? "Sin asignar"}
         </div>
       </div>
-      {t.dueDate && <span className={`badge${overdue ? " bad" : t.dueDate === today && !done ? " warn" : ""}`}>{overdue ? "Overdue · " : t.dueDate === today ? "Today · " : ""}{formatDate(t.dueDate)}</span>}
+      {t.dueDate && <span className={`badge${overdue ? " bad" : t.dueDate === today && !done ? " warn" : ""}`}>{overdue ? "Vencida · " : t.dueDate === today ? "Hoy · " : ""}{formatDate(t.dueDate)}</span>}
       {canDelete && (
-        <ActionForm action={deleteTask} inline submit="Delete" submitClass="sm danger" confirm="Delete this task?" hideMessage>
+        <ActionForm action={deleteTask} inline submit="Eliminar" submitClass="sm danger" confirm="¿Eliminar esta tarea?" hideMessage>
           <input type="hidden" name="id" value={t.id} />
         </ActionForm>
       )}

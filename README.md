@@ -1,86 +1,87 @@
-# Personal CRM
+# CRM Personal
 
-A local-first replacement for Less Annoying CRM: contacts, companies, a configurable sales pipeline, a chronological interaction timeline, and a daily agenda that tells you what to do next.
+Un reemplazo local de Less Annoying CRM: contactos, empresas, un embudo de ventas configurable, una cronología cronológica de interacciones y una agenda diaria que te dice qué hacer a continuación. **Toda la interfaz está en español.**
 
-**Stack:** Next.js 15 (App Router) · TypeScript · PostgreSQL 16 · Drizzle ORM · Docker Compose.
+**Tecnologías:** Next.js 15 (App Router) · TypeScript · PostgreSQL 16 · Drizzle ORM · Docker Compose.
 
-Everything runs on your machine. There are no hosted accounts, billing, telemetry, analytics, or outbound network calls. Your data lives in `./data`.
+Todo corre en tu máquina. No hay cuentas alojadas, facturación, telemetría, analítica ni llamadas a servicios externos. Tus datos viven en `./data`.
 
-## Quick start
+## Inicio rápido
 
-Requires Docker with Compose v2.
+Requiere Docker con Compose v2.
 
 ```bash
 ./start.sh
 ```
 
-On first run this creates `.env` with random secrets (git-ignored), builds the image, starts Postgres and the app, applies migrations, and loads a realistic demo workspace. It prints the URL and logins when ready (default `http://localhost:3000`). Re-running it later just starts/updates the stack.
+La primera vez crea `.env` con secretos aleatorios (git lo ignora), construye la imagen, inicia Postgres y la aplicación, aplica las migraciones y carga un espacio de demostración realista. Al terminar imprime la URL y los accesos (por defecto `http://localhost:3000`). Volver a ejecutarlo solo inicia/actualiza el sistema.
 
-- Admin login: the `ADMIN_EMAIL` / `ADMIN_PASSWORD` in `.env`.
-- Demo users (same `DEMO_USERS_PASSWORD`): `alex@example.com` (member), `sam@example.com` (viewer).
-- Start empty instead: set `SEED_DEMO=false` in `.env` **before** the first run (or delete `./data/postgres` and start again).
-- Stop: `docker compose down` (data stays in `./data`). Logs: `docker compose logs -f app`.
+- Administrador: el `ADMIN_EMAIL` / `ADMIN_PASSWORD` de `.env`.
+- Usuarios demo (misma `DEMO_USERS_PASSWORD`): `alex@example.com` (miembro), `sam@example.com` (solo lectura).
+- Para empezar vacío: pon `SEED_DEMO=false` en `.env` **antes** del primer inicio (o borra `./data/postgres` y reinicia).
+- Detener: `docker compose down` (los datos quedan en `./data`). Registros: `docker compose logs -f app`.
+- Nota: los datos de demostración y los nombres de etapa por defecto se crean en español solo en instalaciones nuevas; una base creada antes conserva sus nombres.
 
-## What it does
+## Qué hace
 
-| Area | Details |
+| Área | Detalle |
 |---|---|
-| Records | Contacts, companies, opportunities, notes, tasks. Every record has an **owner**. |
-| Pipeline | Kanban board; stages are configurable (rename, reorder, add, delete, mark won/lost) in **Settings → Pipeline stages**. |
-| Timeline | Notes, manually logged **emails, meetings and calls**, completed tasks and stage changes, newest first, on every contact, company and opportunity. |
-| Agenda ("Today") | Overdue → due today → next 7 days, plus open deals with **no next action** or **no contact in 14+ days**. Toggle *Mine / Everyone*. |
-| Search | Global search box (press `/`) across contacts, companies, deals and notes, backed by trigram indexes. Full results at `/search`. |
-| Duplicates | Detection by email, phone, name + company (contacts) and normalised name / web domain (companies). Warns when you create a likely duplicate. **Merge** keeps one record, fills its blanks, and moves notes/tasks/interactions/deals across. |
-| Saved views | Save any filter combination on contacts, companies, pipeline or tasks; admins can share views. |
-| Import / export | CSV import with column mapping and a preview; CSV export per entity plus a full JSON export. |
-| Access control | Three roles (below). |
-| Activity log | Immutable record of every change, sign-in, import, export and backup. |
-| Backups | Scheduled `pg_dump` backups, a button in Settings, and a recovery command. |
+| Registros | Contactos, empresas, oportunidades, notas y tareas. Todo tiene un **propietario**. |
+| Embudo | Tablero kanban; las etapas son configurables (renombrar, reordenar, agregar, eliminar, marcar ganada/perdida) en **Configuración → Etapas del embudo**. |
+| Cronología | Notas, **correos, reuniones y llamadas** registrados a mano, tareas completadas y cambios de etapa, de más reciente a más antiguo, en cada contacto, empresa y oportunidad. |
+| Agenda ("Hoy") | Vencidas → vencen hoy → próximos 7 días, más oportunidades abiertas **sin próxima acción** o **sin contacto en 14+ días**. Alterna *Mías / Todos*. |
+| Búsqueda | Cuadro de búsqueda global (tecla `/`) en contactos, empresas, oportunidades y notas, con índices de trigramas. Resultados completos en `/search`. |
+| Duplicados | Detección por correo, teléfono, nombre + empresa (contactos) y nombre normalizado / dominio web (empresas). Avisa al crear un posible duplicado. **Fusionar** conserva un registro, completa sus vacíos y mueve notas, tareas, interacciones y oportunidades. |
+| Vistas guardadas | Guarda cualquier combinación de filtros en contactos, empresas, embudo o tareas; los administradores pueden compartirlas. |
+| Importar / exportar | Importación CSV con asignación de columnas y vista previa; exportación CSV por entidad y una exportación JSON completa. |
+| Control de acceso | Tres roles (abajo). |
+| Registro de actividad | Registro inmutable de cada cambio, inicio de sesión, importación, exportación y copia. |
+| Copias de seguridad | `pg_dump` programado, un botón en Configuración y un comando de recuperación. |
 
-Deliberately **not** included: automatic mailbox ingestion (you log emails by hand), commercial enrichment databases, enterprise forecasting/integrations/compliance, user sign-up, billing, telemetry.
+**No** incluye a propósito: ingesta automática de buzones (los correos se registran a mano), bases de datos comerciales de enriquecimiento, pronósticos/integraciones/cumplimiento empresarial, registro de usuarios, facturación ni telemetría.
 
-## Permissions
+## Permisos
 
-Users are local to the installation; admins create them in **Settings → Users & roles**. There is no sign-up.
+Los usuarios son locales a la instalación; los administradores los crean en **Configuración → Usuarios y roles**. No hay registro público.
 
-| Permission | viewer | member | admin |
+| Permiso | solo lectura | miembro | administrador |
 |---|:-:|:-:|:-:|
-| Read everything | ✓ | ✓ | ✓ |
-| Create / edit records, notes, tasks, log interactions | | ✓ | ✓ |
-| Import CSV, export data | | ✓ | ✓ |
-| Merge duplicates | | ✓ | ✓ |
-| Delete records and tasks | | | ✓ |
-| Pipeline stages, users & roles, backups, activity log | | | ✓ |
+| Ver todo | ✓ | ✓ | ✓ |
+| Crear/editar registros, notas, tareas; registrar interacciones | | ✓ | ✓ |
+| Importar CSV y exportar datos | | ✓ | ✓ |
+| Fusionar duplicados | | ✓ | ✓ |
+| Eliminar registros y tareas | | | ✓ |
+| Etapas del embudo, usuarios y roles, copias, registro de actividad | | | ✓ |
 
-Checks are enforced on the server (every action and API route), not just by hiding buttons. Sessions are random tokens stored hashed in the database; passwords use scrypt; repeated failed sign-ins are throttled.
+Los permisos se verifican en el servidor (cada acción y ruta de API), no solo ocultando botones. Las sesiones son tokens aleatorios guardados con hash; las contraseñas usan scrypt; los inicios de sesión fallidos repetidos se limitan.
 
-## Data location
+## Ubicación de los datos
 
-| What | Where |
+| Qué | Dónde |
 |---|---|
-| Database files | `./data/postgres` (bind mount into the `db` container) |
-| Backups | `./data/backups` |
-| Secrets | `.env` (git-ignored; `.env.example` is the template) |
+| Archivos de la base de datos | `./data/postgres` |
+| Copias de seguridad | `./data/backups` |
+| Secretos | `.env` (ignorado por git; `.env.example` es la plantilla) |
 
-Postgres is published on `127.0.0.1` only. Nothing leaves your machine.
+Postgres solo se publica en `127.0.0.1`. Nada sale de tu máquina.
 
-## Export
+## Exportar
 
-**Import / Export** page, or directly:
+Página **Importar / Exportar**, o directamente:
 
-- `GET /api/export/{contacts|companies|opportunities|tasks|interactions|notes}` → CSV (UTF-8 with BOM, opens in Excel/Numbers/Sheets)
-- `GET /api/export/all` → one JSON file with all records, stages and saved views (no password hashes)
-- `GET /api/export/activity` → activity log CSV (admin)
+- `GET /api/export/{contacts|companies|opportunities|tasks|interactions|notes}` → CSV (UTF-8 con BOM; abre en Excel/Numbers/Sheets)
+- `GET /api/export/all` → un JSON con todos los registros, etapas y vistas guardadas (sin hashes de contraseña)
+- `GET /api/export/activity` → CSV del registro de actividad (administrador)
 
-Filenames are sanitised (`crm-contacts-2026-11-02.csv`). Cells that begin with `= + - @` are prefixed with `'` so a spreadsheet can never execute them as formulas.
+Los nombres de archivo se sanean (`crm-contacts-2026-11-02.csv`). Las celdas que empiezan con `= + - @` llevan un `'` delante para que una hoja de cálculo nunca las ejecute como fórmulas.
 
-## Backups and recovery
+## Copias de seguridad y recuperación
 
-- **Automatic:** the `backup` compose service writes `crm-YYYYMMDD-HHMMSS.dump` to `./data/backups` every `BACKUP_INTERVAL_HOURS` (default 24) and keeps the newest `BACKUP_KEEP` (default 14).
-- **On demand:** **Settings → Backups → Create backup now**, or `docker compose exec app npm run backup`.
-- **Off-machine copy:** copy `./data/backups` somewhere else yourself (the app never uploads anything).
+- **Automática:** el servicio `backup` de compose escribe `crm-AAAAMMDD-HHMMSS.dump` en `./data/backups` cada `BACKUP_INTERVAL_HOURS` (24 por defecto) y conserva las últimas `BACKUP_KEEP` (14).
+- **Bajo demanda:** **Configuración → Copias de seguridad → Crear copia ahora**, o `docker compose exec app npm run backup`.
+- **Copia fuera de la máquina:** copia `./data/backups` a otro lugar tú mismo (la aplicación nunca sube nada).
 
-**Restore** (replaces all current data; a safety backup of the current state is taken first, so a mistaken restore can be undone):
+**Restaurar** (reemplaza todos los datos actuales; antes se hace una copia de seguridad del estado actual, así que una restauración equivocada se puede deshacer):
 
 ```bash
 docker compose stop app backup
@@ -88,84 +89,82 @@ docker compose run --rm app npm run restore -- crm-20261102-031500.dump --yes
 docker compose start app backup
 ```
 
-Run `npm run restore` with no arguments to list available backups. Restore is deliberately a command, not a button. After a restore, a `system.restore` entry is appended to the activity log.
+Ejecuta `npm run restore` sin argumentos para listar las copias. La restauración es un comando a propósito, no un botón. Después se agrega una entrada `system.restore` al registro de actividad.
 
-## CSV import: field mapping
+## Importación CSV: asignación de campos
 
-Open **Import / Export → Import from CSV**, pick *Contacts* or *Companies*, choose the file (≤ 5 MB, ≤ 20,000 rows; comma, semicolon or tab separated). Columns are matched automatically by header name; you can change any mapping and see the first rows exactly as they will be imported before committing. Rows that fail validation are reported with their row number and skipped; the rest import. The whole import runs in one transaction.
+Abre **Importar / Exportar → Importar desde CSV**, elige *Contactos* o *Empresas* y el archivo (≤ 5 MB, ≤ 20 000 filas; separado por comas, punto y coma o tabulaciones). Las columnas se asignan automáticamente por el nombre del encabezado; puedes cambiar cualquier asignación y ver las primeras filas tal como se importarán antes de confirmar. Las filas inválidas se informan con su número de fila y se omiten; el resto se importa. Toda la importación corre en una sola transacción.
 
-**Contacts**
+**Contactos**
 
-| CRM field | Recognised headers (case/punctuation-insensitive) | Notes |
+| Campo del CRM | Encabezados reconocidos (sin distinguir mayúsculas ni signos) | Notas |
 |---|---|---|
-| Full name | `Name`, `Full Name`, `Contact Name`, `Contact` | Split into first/last (`"Lovelace, Ada"` and `Ada Lovelace` both work). Used only when no first/last columns are mapped. |
-| First name | `First Name`, `Given Name`, `First` | |
-| Last name | `Last Name`, `Surname`, `Family Name`, `Last` | |
-| Email | `Email`, `E-mail`, `Email Address`, `Work Email`, `Primary Email` | Lower-cased and validated; if a cell holds several addresses the first is used. |
-| Phone | `Phone`, `Phone Number`, `Telephone`, `Mobile`, `Cell`, `Work Phone` | Stored as typed. |
-| Job title | `Job Title`, `Title`, `Position`, `Role` | |
-| Company | `Company`, `Company Name`, `Organization`, `Account`, `Employer` | Matched to an existing company by normalised name (ignores `Inc`, `LLC`, `Ltd`…), otherwise created. |
-| Owner | `Owner`, `Assigned To`, `User`, `Account Owner` | User email or name; unknown values fall back to the importing user. |
+| Nombre completo | `Name`, `Full Name`, `Contact Name`, `Contact` | Se separa en nombre/apellido (`"Lovelace, Ada"` y `Ada Lovelace` funcionan). Solo se usa si no hay columnas de nombre/apellido. |
+| Nombre | `First Name`, `Given Name`, `First` | |
+| Apellido | `Last Name`, `Surname`, `Family Name`, `Last` | |
+| Correo | `Email`, `E-mail`, `Email Address`, `Work Email`, `Primary Email` | Se pasa a minúsculas y se valida; si la celda trae varias direcciones se usa la primera. |
+| Teléfono | `Phone`, `Phone Number`, `Telephone`, `Mobile`, `Cell`, `Work Phone` | Se guarda tal cual. |
+| Cargo | `Job Title`, `Title`, `Position`, `Role` | |
+| Empresa | `Company`, `Company Name`, `Organization`, `Account`, `Employer` | Se enlaza con una empresa existente por nombre normalizado (ignora `Inc`, `LLC`, `Ltd`…); si no existe, se crea. |
+| Propietario | `Owner`, `Assigned To`, `User`, `Account Owner` | Correo o nombre del usuario; los desconocidos pasan al usuario que importa. |
 
-A row needs a name or an email. **Duplicates:** a row whose email already exists is *skipped* (default) or *updates* the existing contact's blank/changed fields, your choice per import.
+Una fila necesita un nombre o un correo. **Duplicados:** si el correo ya existe, la fila se *omite* (por defecto) o *actualiza* el contacto existente, a tu elección en cada importación.
 
-**Companies**
+**Empresas**
 
-| CRM field | Recognised headers | Notes |
+| Campo del CRM | Encabezados reconocidos | Notas |
 |---|---|---|
-| Name (required) | `Name`, `Company`, `Company Name`, `Organization`, `Account` | Existing company (same normalised name or domain) is skipped or updated. |
-| Domain | `Domain`, `Website Domain` | Derived from the website when empty. |
-| Website | `Website`, `URL`, `Web`, `Site` | |
-| Phone | `Phone`, `Phone Number`, `Telephone`, `Main Phone` | |
-| Industry | `Industry`, `Sector`, `Category` | |
-| Address | `Address`, `Street Address`, `Location`, `HQ` | |
-| Owner | as above | |
+| Nombre (obligatorio) | `Name`, `Company`, `Company Name`, `Organization`, `Account` | Una empresa existente (mismo nombre normalizado o dominio) se omite o se actualiza. |
+| Dominio | `Domain`, `Website Domain` | Se obtiene del sitio web si está vacío. |
+| Sitio web | `Website`, `URL`, `Web`, `Site` | |
+| Teléfono | `Phone`, `Phone Number`, `Telephone`, `Main Phone` | |
+| Industria | `Industry`, `Sector`, `Category` | |
+| Dirección | `Address`, `Street Address`, `Location`, `HQ` | |
+| Propietario | igual que arriba | |
 
-Exports from Less Annoying CRM use headers such as *Name*, *Company Name*, *Email*, *Phone* and *Job Title*, which map automatically; I have not been able to test against a real LACRM export file, so check the preview step. Anything not mapped (e.g. custom fields, pipelines, notes history) is not imported.
+Los encabezados reconocidos son los de exportaciones habituales (en inglés, como los de Less Annoying CRM: *Name*, *Company Name*, *Email*, *Phone*, *Job Title*); no pude probar con un archivo real de LACRM, así que revisa la vista previa. Lo que no se asigne (campos personalizados, embudos, historial de notas) no se importa. La lógica está en `src/lib/import-mapping.ts` (funciones puras con pruebas); para enseñarle un encabezado nuevo, agrega un alias ahí.
 
-The mapping logic lives in `src/lib/import-mapping.ts` (pure functions, unit-tested); to teach it a new header, add an alias there.
-
-## Architecture
+## Arquitectura
 
 ```
-Browser ── Next.js 15 (App Router, one container) ── PostgreSQL 16 (one container)
-           ├─ Server Components  → read pages (src/app/(app)/**)
-           ├─ Server Actions     → every mutation (src/app/actions/*): permission check → zod validation
-           │                       → DB transaction → activity-log row in the same transaction
-           ├─ Route handlers     → search, CSV/JSON export, CSV import, backup download (src/app/api/**)
-           └─ Drizzle ORM        → schema in src/db/schema.ts, SQL migrations in drizzle/
+Navegador ── Next.js 15 (App Router, un contenedor) ── PostgreSQL 16 (un contenedor)
+             ├─ Server Components  → páginas de lectura (src/app/(app)/**)
+             ├─ Server Actions     → cada modificación (src/app/actions/*): permiso → validación zod
+             │                       → transacción → fila en el registro de actividad en la misma transacción
+             ├─ Route handlers     → búsqueda, exportación CSV/JSON, importación CSV, descarga de copias (src/app/api/**)
+             └─ Drizzle ORM        → esquema en src/db/schema.ts, migraciones SQL en drizzle/
 ```
 
-- `src/lib/` holds the pure, tested logic (CSV, import mapping, duplicate detection, merge, permissions, timeline, filenames) separate from database code.
-- `drizzle/0000_init.sql` is generated from the schema; `0001_*.sql` is hand-written: the immutable-log triggers and `pg_trgm` search indexes.
-- **Immutable log:** database triggers reject `UPDATE`, `DELETE` and `TRUNCATE` on `activity_log`. This protects against application bugs and ad-hoc SQL; the database *owner* can still drop the table, so it is tamper-*evident* storage for a personal tool, not a compliance control.
-- **Unavailable services:** if the database is down, pages show a retry screen, forms show a recoverable message instead of crashing, and the search box shows "unavailable · Retry" (and an offline notice). `GET /api/health` reports database status (used by the compose healthcheck).
-- **Forms:** after a successful save the page does a full reload/navigation rather than a client-side refresh. This was a deliberate choice: Next's client-side refresh paths dropped updates intermittently in testing, and a reload is deterministic for a local app. Costs: scroll position and half-typed text in *other* forms on the page are lost on save.
+- `src/lib/` contiene la lógica pura y probada (CSV, asignación de importación, detección de duplicados, fusión, permisos, cronología, nombres de archivo), separada del código de base de datos. Los textos de la interfaz están en español directamente en el código; las etiquetas de valores internos (roles, tipos) están en `src/lib/i18n.ts`.
+- `drizzle/0000_init.sql` se genera desde el esquema; `0001_*.sql` es manual: disparadores del registro inmutable e índices de búsqueda `pg_trgm`.
+- **Registro inmutable:** disparadores de la base de datos rechazan `UPDATE`, `DELETE` y `TRUNCATE` sobre `activity_log`. Protege contra errores de la aplicación y SQL manual; el *dueño* de la base aún puede borrar la tabla, así que es un registro que evidencia manipulación para una herramienta personal, no un control de cumplimiento.
+- **Servicios no disponibles:** si la base de datos cae, las páginas muestran una pantalla para reintentar, los formularios muestran un mensaje recuperable y el buscador muestra "no disponible · Reintentar" (y aviso sin conexión). `GET /api/health` informa el estado de la base (lo usa el healthcheck de compose).
+- **Formularios:** tras guardar con éxito la página se recarga por completo en vez de refrescarse del lado del cliente. Fue deliberado: los mecanismos de refresco de Next fallaron de forma intermitente en las pruebas. Costo: se pierden la posición de scroll y el texto a medio escribir en *otros* formularios de la misma página.
 
-## Development
+## Desarrollo
 
 ```bash
-cp .env.example .env            # or run ./start.sh once, then `docker compose stop app backup`
-docker compose up -d db         # Postgres on 127.0.0.1:5432
+cp .env.example .env            # o ejecuta ./start.sh una vez y luego `docker compose stop app backup`
+docker compose up -d db         # Postgres en 127.0.0.1:5432
 npm install
 npm run db:migrate && npm run db:seed
 npm run dev                     # http://localhost:3000
 ```
 
-Scripts: `db:generate` (new migration from schema changes), `db:migrate`, `db:seed`, `backup`, `restore`, `typecheck`, `test`, `test:e2e`.
+Scripts: `db:generate` (nueva migración desde el esquema), `db:migrate`, `db:seed`, `backup`, `restore`, `typecheck`, `test`, `test:e2e`.
 
-### Tests
+### Pruebas
 
 ```bash
-npm test               # unit tests (vitest): CSV, import transformation, duplicates, merge, timeline, permissions, filenames
-npx playwright install chromium   # once
-npm run test:e2e       # end-to-end happy path
+npm test               # pruebas unitarias (vitest): CSV, transformación de importación, duplicados, fusión, cronología, permisos, nombres de archivo
+npx playwright install chromium   # una vez
+npm run test:e2e       # flujo principal de extremo a extremo
 ```
 
-`test:e2e` builds the app and runs it against a **disposable database named `<your db>_e2e`** that it creates, wipes and re-seeds each run (it refuses to touch any database not ending in `_e2e`/`_test`). It needs Postgres reachable via `DATABASE_URL` (see above). The happy path: sign in → create company → contact → opportunity → move stage → log an email → add a task due today → see it on the agenda → global search → export CSV.
+`test:e2e` construye la aplicación y la ejecuta contra una **base desechable llamada `<tu base>_e2e`** que crea, borra y recarga en cada ejecución (se niega a tocar cualquier base que no termine en `_e2e`/`_test`). Necesita Postgres accesible vía `DATABASE_URL`. El flujo: iniciar sesión → crear empresa → contacto → oportunidad → mover de etapa → registrar un correo → agregar una tarea para hoy → verla en la agenda → búsqueda global → exportar CSV.
 
-## Security notes
+## Notas de seguridad
 
-- No credentials are committed. `.env` is git-ignored; `start.sh` generates random secrets. The only fixed passwords in the repo are fixtures for the throwaway e2e database in `playwright.config.ts`.
-- The app and Postgres listen on `127.0.0.1` only. To expose it on a network, put it behind your own HTTPS reverse proxy and set `COOKIE_SECURE=true`.
-- `npm audit` reports advisories in `postcss`, which is bundled inside Next.js and only runs at build time on this project's own CSS. They are not reachable from user input.
+- No se suben credenciales. `.env` está ignorado por git; `start.sh` genera secretos aleatorios. Las únicas contraseñas fijas del repositorio son datos de prueba de la base desechable en `playwright.config.ts`.
+- La aplicación y Postgres escuchan solo en `127.0.0.1`. Para exponerla en una red, ponla detrás de tu propio proxy HTTPS y define `COOKIE_SECURE=true`.
+- `npm audit` reporta avisos en `postcss`, incluido dentro de Next.js y que solo corre en la compilación sobre el CSS de este proyecto; no es alcanzable desde la entrada de usuarios.

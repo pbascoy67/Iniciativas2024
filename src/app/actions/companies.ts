@@ -9,7 +9,7 @@ import { mergeFields } from "@/lib/merge";
 import { optStr, optUuid, parseForm, reqStr } from "@/lib/validation";
 
 const companySchema = z.object({
-  name: reqStr("Company name"), domain: optStr(120), website: optStr(300), phone: optStr(50), industry: optStr(100), address: optStr(300),
+  name: reqStr("El nombre de la empresa"), domain: optStr(120), website: optStr(300), phone: optStr(50), industry: optStr(100), address: optStr(300),
   ownerId: optUuid, force: z.string().optional(),
 });
 
@@ -25,14 +25,14 @@ export async function createCompany(_p: FormState, fd: FormData): Promise<FormSt
     if (!parsed.force) {
       const existing = await db.select({ id: companies.id, name: companies.name, domain: companies.domain, website: companies.website }).from(companies);
       const hits = matchesForCompany({ name: v.name, domain: v.domain, website: v.website }, existing);
-      if (hits.length) return { warning: `Possible duplicate of ${hits.slice(0, 3).map((h) => h.name).join(", ")}. Submit again to create it anyway.` };
+      if (hits.length) return { warning: `Posible duplicado de ${hits.slice(0, 3).map((h) => h.name).join(", ")}. Envía de nuevo para crearla de todos modos.` };
     }
     const id = await db.transaction(async (tx) => {
       const [row] = await tx.insert(companies).values(v).returning({ id: companies.id });
-      await logActivity(tx, user, { action: "company.create", entity: "company", entityId: row.id, summary: `Created company ${v.name}` });
+      await logActivity(tx, user, { action: "company.create", entity: "company", entityId: row.id, summary: `Creó la empresa ${v.name}` });
       return row.id;
     });
-    return go(`/companies/${id}`, "Company created");
+    return go(`/companies/${id}`, "Empresa creada");
   });
 }
 
@@ -42,10 +42,10 @@ export async function updateCompany(_p: FormState, fd: FormData): Promise<FormSt
     const v = clean(parseForm(companySchema, fd));
     await db.transaction(async (tx) => {
       const res = await tx.update(companies).set({ ...v, updatedAt: new Date() }).where(eq(companies.id, id)).returning({ id: companies.id });
-      if (!res.length) throw new UserFacingError("This company no longer exists.");
-      await logActivity(tx, user, { action: "company.update", entity: "company", entityId: id, summary: `Updated company ${v.name}` });
+      if (!res.length) throw new UserFacingError("Esta empresa ya no existe.");
+      await logActivity(tx, user, { action: "company.update", entity: "company", entityId: id, summary: `Actualizó la empresa ${v.name}` });
     });
-    return go(`/companies/${id}`, "Company saved");
+    return go(`/companies/${id}`, "Empresa guardada");
   });
 }
 
@@ -54,10 +54,10 @@ export async function deleteCompany(_p: FormState, fd: FormData): Promise<FormSt
     const id = z.string().uuid().parse(fd.get("id"));
     await db.transaction(async (tx) => {
       const [c] = await tx.delete(companies).where(eq(companies.id, id)).returning();
-      if (!c) throw new UserFacingError("This company no longer exists.");
-      await logActivity(tx, user, { action: "company.delete", entity: "company", entityId: id, summary: `Deleted company ${c.name}`, details: { record: c } });
+      if (!c) throw new UserFacingError("Esta empresa ya no existe.");
+      await logActivity(tx, user, { action: "company.delete", entity: "company", entityId: id, summary: `Eliminó la empresa ${c.name}`, details: { record: c } });
     });
-    return go("/companies", "Company deleted (its contacts were kept)");
+    return go("/companies", "Empresa eliminada (sus contactos se conservaron)");
   });
 }
 
@@ -65,14 +65,14 @@ const FILL = ["domain", "website", "phone", "industry", "address", "ownerId"] as
 
 export async function mergeCompanies(_p: FormState, fd: FormData): Promise<FormState> {
   return guarded("merge", async (user) => {
-    const ids = z.array(z.string().uuid()).min(2, "Select at least two companies").parse(fd.getAll("ids"));
-    const keep = z.string().uuid("Choose which company to keep").parse(fd.get("keep"));
+    const ids = z.array(z.string().uuid()).min(2, "Selecciona al menos dos empresas").parse(fd.getAll("ids"));
+    const keep = z.string().uuid("Elige qué empresa conservar").parse(fd.get("keep"));
     const others = ids.filter((i) => i !== keep);
-    if (others.length === ids.length || !others.length) throw new UserFacingError("Choose which company to keep.");
+    if (others.length === ids.length || !others.length) throw new UserFacingError("Elige qué empresa conservar.");
     await db.transaction(async (tx) => {
       const rows = await tx.select().from(companies).where(inArray(companies.id, ids));
       const primary = rows.find((r) => r.id === keep);
-      if (!primary || rows.length !== ids.length) throw new UserFacingError("One of these companies no longer exists. Refresh and try again.");
+      if (!primary || rows.length !== ids.length) throw new UserFacingError("Una de estas empresas ya no existe. Actualiza e inténtalo de nuevo.");
       const donors = others.map((o) => rows.find((r) => r.id === o)!);
       const patch = mergeFields(primary, donors, [...FILL]);
       if (Object.keys(patch).length) await tx.update(companies).set({ ...patch, updatedAt: new Date() }).where(eq(companies.id, keep));
@@ -84,9 +84,9 @@ export async function mergeCompanies(_p: FormState, fd: FormData): Promise<FormS
       await tx.delete(companies).where(inArray(companies.id, others));
       await logActivity(tx, user, {
         action: "company.merge", entity: "company", entityId: keep,
-        summary: `Merged ${others.length} duplicate(s) into ${primary.name}`, details: { merged: donors, patch },
+        summary: `Fusionó ${others.length} duplicado(s) en ${primary.name}`, details: { merged: donors, patch },
       });
     });
-    return { ok: true, message: "Companies merged. Contacts, opportunities and history were moved to the kept company." };
+    return { ok: true, message: "Empresas fusionadas. Los contactos, oportunidades e historial pasaron a la empresa conservada." };
   });
 }

@@ -10,24 +10,24 @@ export interface FieldDef {
 }
 
 export const CONTACT_FIELDS: FieldDef[] = [
-  { key: "fullName", label: "Full name (split into first/last)", aliases: ["name", "full name", "contact name", "contact"] },
-  { key: "firstName", label: "First name", aliases: ["first name", "firstname", "given name", "first"] },
-  { key: "lastName", label: "Last name", aliases: ["last name", "lastname", "surname", "family name", "last"] },
-  { key: "email", label: "Email", aliases: ["email", "e-mail", "email address", "e-mail address", "work email", "primary email"] },
-  { key: "phone", label: "Phone", aliases: ["phone", "phone number", "telephone", "mobile", "cell", "work phone", "primary phone"] },
-  { key: "jobTitle", label: "Job title", aliases: ["job title", "title", "position", "role"] },
-  { key: "company", label: "Company (created if missing)", aliases: ["company", "company name", "organization", "organisation", "account", "employer"] },
-  { key: "owner", label: "Owner (user email or name)", aliases: ["owner", "assigned to", "assigned", "user", "account owner"] },
+  { key: "fullName", label: "Nombre completo (se separa en nombre/apellido)", aliases: ["name", "full name", "contact name", "contact"] },
+  { key: "firstName", label: "Nombre", aliases: ["first name", "firstname", "given name", "first"] },
+  { key: "lastName", label: "Apellido", aliases: ["last name", "lastname", "surname", "family name", "last"] },
+  { key: "email", label: "Correo", aliases: ["email", "e-mail", "email address", "e-mail address", "work email", "primary email"] },
+  { key: "phone", label: "Teléfono", aliases: ["phone", "phone number", "telephone", "mobile", "cell", "work phone", "primary phone"] },
+  { key: "jobTitle", label: "Cargo", aliases: ["job title", "title", "position", "role"] },
+  { key: "company", label: "Empresa (se crea si no existe)", aliases: ["company", "company name", "organization", "organisation", "account", "employer"] },
+  { key: "owner", label: "Propietario (correo o nombre del usuario)", aliases: ["owner", "assigned to", "assigned", "user", "account owner"] },
 ];
 
 export const COMPANY_FIELDS: FieldDef[] = [
-  { key: "name", label: "Name", required: true, aliases: ["name", "company", "company name", "organization", "organisation", "account"] },
-  { key: "domain", label: "Domain", aliases: ["domain", "website domain"] },
-  { key: "website", label: "Website", aliases: ["website", "url", "web", "site", "web site"] },
-  { key: "phone", label: "Phone", aliases: ["phone", "phone number", "telephone", "main phone"] },
-  { key: "industry", label: "Industry", aliases: ["industry", "sector", "category"] },
-  { key: "address", label: "Address", aliases: ["address", "street address", "location", "hq"] },
-  { key: "owner", label: "Owner (user email or name)", aliases: ["owner", "assigned to", "assigned", "user", "account owner"] },
+  { key: "name", label: "Nombre", required: true, aliases: ["name", "company", "company name", "organization", "organisation", "account"] },
+  { key: "domain", label: "Dominio", aliases: ["domain", "website domain"] },
+  { key: "website", label: "Sitio web", aliases: ["website", "url", "web", "site", "web site"] },
+  { key: "phone", label: "Teléfono", aliases: ["phone", "phone number", "telephone", "main phone"] },
+  { key: "industry", label: "Industria", aliases: ["industry", "sector", "category"] },
+  { key: "address", label: "Dirección", aliases: ["address", "street address", "location", "hq"] },
+  { key: "owner", label: "Propietario (correo o nombre del usuario)", aliases: ["owner", "assigned to", "assigned", "user", "account owner"] },
 ];
 
 export const FIELDS: Record<ImportEntity, FieldDef[]> = { contacts: CONTACT_FIELDS, companies: COMPANY_FIELDS };
@@ -115,8 +115,8 @@ export function transformContacts(rows: string[][], mapping: Mapping): Transform
     const emailRaw = cell(row, mapping, "email");
     // LACRM-style multi-value cells ("a@x.com; b@x.com"): keep the first
     const email = emailRaw ? normalizeEmail(emailRaw.split(/[;,\s]+/)[0]) : null;
-    if (email && !EMAIL_RE.test(email)) return void out.errors.push({ row: n, message: `Invalid email "${emailRaw}"` });
-    if (!firstName && !lastName && !email) return void out.errors.push({ row: n, message: "Needs a name or an email" });
+    if (email && !EMAIL_RE.test(email)) return void out.errors.push({ row: n, message: `Correo no válido "${emailRaw}"` });
+    if (!firstName && !lastName && !email) return void out.errors.push({ row: n, message: "Necesita un nombre o un correo" });
     out.records.push({
       row: n,
       record: {
@@ -138,7 +138,7 @@ export function transformCompanies(rows: string[][], mapping: Mapping): Transfor
   rows.forEach((row, idx) => {
     const n = idx + 1;
     const name = cell(row, mapping, "name");
-    if (!name) return void out.errors.push({ row: n, message: "Company name is required" });
+    if (!name) return void out.errors.push({ row: n, message: "El nombre de la empresa es obligatorio" });
     out.records.push({
       row: n,
       record: {

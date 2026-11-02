@@ -7,12 +7,12 @@ export const dynamic = "force-dynamic";
 export async function POST(req: Request) {
   const user = await userOrResponse("import");
   if (user instanceof Response) return user;
-  if (!sameOrigin(req)) return Response.json({ error: "Cross-origin request blocked." }, { status: 403 });
+  if (!sameOrigin(req)) return Response.json({ error: "Solicitud de otro origen bloqueada." }, { status: 403 });
   try {
     const body = (await req.json()) as { entity?: string; text?: string; mapping?: Record<string, number> };
-    if (body.entity !== "contacts" && body.entity !== "companies") return Response.json({ error: "Choose contacts or companies." }, { status: 400 });
-    if (typeof body.text !== "string" || !body.text.trim()) return Response.json({ error: "The file is empty." }, { status: 400 });
-    if (body.text.length > MAX_IMPORT_BYTES) return Response.json({ error: "File is larger than 5 MB. Split it into smaller files." }, { status: 413 });
+    if (body.entity !== "contacts" && body.entity !== "companies") return Response.json({ error: "Elige contactos o empresas." }, { status: 400 });
+    if (typeof body.text !== "string" || !body.text.trim()) return Response.json({ error: "El archivo está vacío." }, { status: 400 });
+    if (body.text.length > MAX_IMPORT_BYTES) return Response.json({ error: "El archivo supera los 5 MB. Divídelo en archivos más pequeños." }, { status: 413 });
     const entity = body.entity as ImportEntity;
     const { headers, rows } = parseImportText(body.text);
     const mapping = body.mapping ?? autoMap(headers, entity);
@@ -23,6 +23,6 @@ export async function POST(req: Request) {
       sample: records.slice(0, 5).map((r) => r.record),
     });
   } catch (e) {
-    return Response.json({ error: e instanceof Error ? e.message : "Could not read that file." }, { status: 400 });
+    return Response.json({ error: e instanceof Error ? e.message : "No se pudo leer ese archivo." }, { status: 400 });
   }
 }

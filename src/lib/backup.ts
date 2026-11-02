@@ -25,7 +25,7 @@ export function run(cmd: string, args: string[], env: NodeJS.ProcessEnv): Promis
     let err = "";
     p.stderr.on("data", (d) => (err += d));
     p.on("error", (e: NodeJS.ErrnoException) =>
-      reject(new Error(e.code === "ENOENT" ? `${cmd} was not found. Install the PostgreSQL client tools, or run this inside the docker compose "app" container.` : e.message)),
+      reject(new Error(e.code === "ENOENT" ? `No se encontró ${cmd}. Instala las herramientas cliente de PostgreSQL o ejecútalo dentro del contenedor "app" de docker compose.` : e.message)),
     );
     p.on("close", (code) => (code === 0 ? resolve() : reject(new Error(`${cmd} failed (exit ${code}): ${err.trim().slice(-600)}`))));
   });

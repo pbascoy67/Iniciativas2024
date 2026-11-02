@@ -35,7 +35,7 @@ export async function guarded(permission: Permission, fn: (user: SessionUser) =>
     if (e instanceof ValidationError) return { error: e.message, fieldErrors: e.fieldErrors };
     if (e instanceof ForbiddenError || e instanceof UserFacingError) return { error: e.message };
     console.error("[action]", e);
-    return { error: "Something went wrong and nothing was saved. Check that the database is running, then try again." };
+    return { error: "Algo salió mal y no se guardó nada. Verifica que la base de datos esté en marcha e inténtalo de nuevo." };
   }
 }
 

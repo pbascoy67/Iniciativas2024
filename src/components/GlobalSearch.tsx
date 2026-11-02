@@ -5,7 +5,7 @@ import { useEffect, useRef, useState } from "react";
 
 type Hit = { id: string; name: string; sub: string; href: string };
 type Results = Record<"contacts" | "companies" | "opportunities" | "notes", Hit[]>;
-const LABELS: [keyof Results, string][] = [["contacts", "Contacts"], ["companies", "Companies"], ["opportunities", "Opportunities"], ["notes", "Notes"]];
+const LABELS: [keyof Results, string][] = [["contacts", "Contactos"], ["companies", "Empresas"], ["opportunities", "Oportunidades"], ["notes", "Notas"]];
 
 export function GlobalSearch() {
   const router = useRouter();
@@ -50,20 +50,20 @@ export function GlobalSearch() {
   return (
     <div className="search" ref={box} role="search">
       <form onSubmit={(e) => { e.preventDefault(); if (q.trim()) { setOpen(false); router.push(`/search?q=${encodeURIComponent(q.trim())}`); } }}>
-        <label className="sr" htmlFor="global-search">Search everything</label>
-        <input id="global-search" type="search" placeholder='Search contacts, companies, deals, notes…  (press "/")' value={q} autoComplete="off"
+        <label className="sr" htmlFor="global-search">Buscar en todo</label>
+        <input id="global-search" type="search" placeholder='Buscar contactos, empresas, oportunidades, notas…  (presiona "/")' value={q} autoComplete="off"
           onChange={(e) => { setQ(e.target.value); setOpen(true); }} onFocus={() => setOpen(true)} />
       </form>
       {open && q.trim().length >= 2 && (
         <div className="dropdown" role="listbox">
-          {status === "loading" && !results && <div className="muted small" style={{ padding: ".5rem" }}>Searching…</div>}
+          {status === "loading" && !results && <div className="muted small" style={{ padding: ".5rem" }}>Buscando…</div>}
           {(status === "error" || status === "offline") && (
             <div className="notice err">
-              {status === "offline" ? "You appear to be offline." : "Search is unavailable right now."}{" "}
-              <button type="button" className="sm" onClick={() => setRetry((n) => n + 1)}>Retry</button>
+              {status === "offline" ? "Parece que no tienes conexión." : "La búsqueda no está disponible ahora."}{" "}
+              <button type="button" className="sm" onClick={() => setRetry((n) => n + 1)}>Reintentar</button>
             </div>
           )}
-          {status === "idle" && results && total === 0 && <div className="muted small" style={{ padding: ".5rem" }}>No matches for “{q}”.</div>}
+          {status === "idle" && results && total === 0 && <div className="muted small" style={{ padding: ".5rem" }}>Sin resultados para “{q}”.</div>}
           {results && LABELS.map(([k, label]) => results[k].length > 0 && (
             <div key={k}>
               <div className="grp">{label}</div>
@@ -75,7 +75,7 @@ export function GlobalSearch() {
               ))}
             </div>
           ))}
-          {results && total > 0 && <div className="grp"><Link prefetch={false} href={`/search?q=${encodeURIComponent(q.trim())}`} onClick={() => setOpen(false)}>See all results</Link></div>}
+          {results && total > 0 && <div className="grp"><Link prefetch={false} href={`/search?q=${encodeURIComponent(q.trim())}`} onClick={() => setOpen(false)}>Ver todos los resultados</Link></div>}
         </div>
       )}
     </div>

@@ -14,35 +14,35 @@ async function main() {
   const yes = args.includes("--yes");
   const arg = args.find((a) => !a.startsWith("--"));
   if (!arg) {
-    console.error(`Usage: npm run restore -- <backup-file> --yes\n\nAvailable backups in ${backupDir()}:`);
+    console.error(`Uso: npm run restore -- <archivo-de-copia> --yes\n\nCopias disponibles en ${backupDir()}:`);
     for (const b of listBackups()) console.error(`  ${b.file}  (${(b.bytes / 1024).toFixed(0)} KB, ${b.modified.toISOString()})`);
     process.exit(2);
   }
   // accept a bare name (looked up in the backup dir) or an explicit path
   const file = existsSync(arg) ? path.resolve(arg) : path.join(backupDir(), path.basename(arg));
-  if (!existsSync(file)) throw new Error(`Backup not found: ${file}`);
+  if (!existsSync(file)) throw new Error(`No se encontró la copia: ${file}`);
   if (!yes) {
-    console.error(`This will REPLACE all data in the database with ${file}.\nStop the app first (docker compose stop app), then re-run with --yes.`);
+    console.error(`Esto REEMPLAZARÁ todos los datos de la base de datos con ${file}.\nDetén primero la aplicación (docker compose stop app) y vuelve a ejecutar con --yes.`);
     process.exit(2);
   }
   const env = pgEnv();
   try {
     const safety = await createBackup();
-    console.log(`Safety backup of current data: ${path.join(backupDir(), safety.file)}`);
+    console.log(`Copia de seguridad de los datos actuales: ${path.join(backupDir(), safety.file)}`);
   } catch (e) {
-    console.warn(`Could not take a safety backup (${(e as Error).message}). Continuing because the database may be empty or broken.`);
+    console.warn(`No se pudo crear la copia de seguridad previa (${(e as Error).message}). Se continúa porque la base de datos puede estar vacía o dañada.`);
   }
   await run("pg_restore", ["--clean", "--if-exists", "--no-owner", "--single-transaction", "--exit-on-error", "--dbname", env.PGDATABASE!, file], env);
   const sql = postgres(process.env.DATABASE_URL!, { max: 1, onnotice: () => {} });
   try {
-    await sql`insert into activity_log (actor_name, action, entity, summary) values ('system', 'system.restore', 'system', ${`Restored from ${path.basename(file)}`})`;
+    await sql`insert into activity_log (actor_name, action, entity, summary) values ('sistema', 'system.restore', 'system', ${`Restauró desde ${path.basename(file)}`})`;
   } finally {
     await sql.end();
   }
-  console.log(`Restored from ${file}. Start the app again (docker compose start app).`);
+  console.log(`Restaurado desde ${file}. Vuelve a iniciar la aplicación (docker compose start app).`);
 }
 
 main().catch((e) => {
-  console.error("Restore failed:", e.message);
+  console.error("Falló la restauración:", e.message);
   process.exit(1);
 });

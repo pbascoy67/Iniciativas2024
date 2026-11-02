@@ -9,7 +9,7 @@ describe("csv", () => {
   });
 
   it("rejects truncated quoted files with a clear message", () => {
-    expect(() => parseCsv('a,b\n"oops,1')).toThrow(/Unterminated/);
+    expect(() => parseCsv('a,b\n"oops,1')).toThrow(/sin cerrar/);
   });
 
   it("round-trips and neutralizes spreadsheet formulas on export", () => {

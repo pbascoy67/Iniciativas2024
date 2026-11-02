@@ -1,16 +1,16 @@
 import { z, ZodError, type ZodTypeAny } from "zod";
 
 export const reqStr = (label: string, max = 200) =>
-  z.string({ required_error: `${label} is required` }).trim().min(1, `${label} is required`).max(max, `${label} is too long (max ${max})`);
+  z.string({ required_error: `${label}: campo obligatorio` }).trim().min(1, `${label}: campo obligatorio`).max(max, `${label} es demasiado largo (máx. ${max})`);
 
 export const optStr = (max = 200) =>
-  z.string().trim().max(max, `Too long (max ${max})`).optional().transform((v) => (v ? v : null));
+  z.string().trim().max(max, `Demasiado largo (máx. ${max})`).optional().transform((v) => (v ? v : null));
 
 export const optUuid = z
   .string()
   .optional()
   .transform((v) => (v ? v : null))
-  .pipe(z.string().uuid("Invalid selection").nullable());
+  .pipe(z.string().uuid("Selección no válida").nullable());
 
 export const optEmail = z
   .string()
@@ -18,17 +18,17 @@ export const optEmail = z
   .max(254)
   .optional()
   .transform((v) => (v ? v.toLowerCase() : null))
-  .pipe(z.string().email("Enter a valid email address").nullable());
+  .pipe(z.string().email("Ingresa un correo válido").nullable());
 
 export const optDate = z
   .string()
   .optional()
   .transform((v) => (v ? v : null))
-  .pipe(z.string().regex(/^\d{4}-\d{2}-\d{2}$/, "Use a valid date").nullable());
+  .pipe(z.string().regex(/^\d{4}-\d{2}-\d{2}$/, "Usa una fecha válida").nullable());
 
 export class ValidationError extends Error {
   constructor(public fieldErrors: Record<string, string>) {
-    super("Please fix the highlighted fields.");
+    super("Corrige los campos marcados.");
   }
 }
 
@@ -57,7 +57,7 @@ export const dateTime = z
     if (!v) return new Date();
     const d = new Date(v);
     if (Number.isNaN(d.getTime())) {
-      ctx.addIssue({ code: "custom", message: "Enter a valid date and time" });
+      ctx.addIssue({ code: "custom", message: "Ingresa una fecha y hora válidas" });
       return z.NEVER;
     }
     return d;

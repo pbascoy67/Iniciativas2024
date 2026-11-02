@@ -13,7 +13,7 @@ export const SESSION_COOKIE = "crm_session";
 const SESSION_DAYS = 14;
 
 export class ForbiddenError extends Error {
-  constructor(message = "You do not have permission to do that.") {
+  constructor(message = "No tienes permiso para hacer eso.") {
     super(message);
   }
 }
@@ -74,10 +74,10 @@ export async function userOrResponse(permission: Permission = "read"): Promise<S
   try {
     user = await getUser();
   } catch {
-    return Response.json({ error: "The database is unavailable. Try again shortly." }, { status: 503 });
+    return Response.json({ error: "La base de datos no está disponible. Inténtalo de nuevo en unos momentos." }, { status: 503 });
   }
-  if (!user) return Response.json({ error: "Not signed in." }, { status: 401 });
-  if (!can(user.role, permission)) return Response.json({ error: "You do not have permission to do that." }, { status: 403 });
+  if (!user) return Response.json({ error: "No has iniciado sesión." }, { status: 401 });
+  if (!can(user.role, permission)) return Response.json({ error: "No tienes permiso para hacer eso." }, { status: 403 });
   return user;
 }
 

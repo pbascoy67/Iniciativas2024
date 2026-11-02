@@ -14,7 +14,7 @@ export interface ActivityInput {
 export async function logActivity(tx: DbOrTx, actor: Pick<SessionUser, "id" | "name"> | null, input: ActivityInput) {
   await tx.insert(activityLog).values({
     actorId: actor?.id ?? null,
-    actorName: actor?.name ?? "system",
+    actorName: actor?.name ?? "sistema",
     action: input.action,
     entity: input.entity,
     entityId: input.entityId ?? null,

@@ -5,7 +5,7 @@ import type { FormState } from "@/lib/action";
 
 const Errors = createContext<Record<string, string> | undefined>(undefined);
 
-function Submit({ label, className = "primary", pendingLabel = "Saving…" }: { label: string; className?: string; pendingLabel?: string }) {
+function Submit({ label, className = "primary", pendingLabel = "Guardando…" }: { label: string; className?: string; pendingLabel?: string }) {
   const { pending } = useFormStatus();
   return (
     <button type="submit" className={className} disabled={pending} aria-busy={pending}>
@@ -23,7 +23,7 @@ export function SubmitButton(props: { label: string; className?: string; pending
  * (re-submitting with the hidden `force` flag proceeds) and success/error messages.
  */
 export function ActionForm({
-  action, children, submit = "Save", submitClass, confirm, className, inline, hideMessage, noSubmit,
+  action, children, submit = "Guardar", submitClass, confirm, className, inline, hideMessage, noSubmit,
 }: {
   action: (prev: FormState, fd: FormData) => Promise<FormState>;
   children?: ReactNode; submit?: string; submitClass?: string; confirm?: string; className?: string; inline?: boolean; hideMessage?: boolean; noSubmit?: boolean;
@@ -60,7 +60,7 @@ export function ActionForm({
       >
         {children}
         {state?.warning && <input type="hidden" name="force" value="1" />}
-        {!noSubmit && <Submit label={state?.warning ? "Create anyway" : submit} className={submitClass} />}
+        {!noSubmit && <Submit label={state?.warning ? "Crear de todos modos" : submit} className={submitClass} />}
         {!hideMessage && (
           <div role="status" aria-live="polite">
             {state?.error && <div className="notice err">{state.error}</div>}
